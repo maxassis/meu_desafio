@@ -198,7 +198,6 @@ export default function ProfileEdit() {
       return editUserData(payload)
     },
     onSuccess: () => {
-      console.warn('[edit-user-data] alteracoes salvas com sucesso')
       if (isBottomSheetAvatarRefOpen)
         bottomSheetAvatarRef.current?.dismiss()
       if (isBottomSheetRefOpen)
@@ -391,7 +390,7 @@ export default function ProfileEdit() {
         onDidPresent={() => setIsBottomSheetAvatarRefOpen(true)}
         onDidDismiss={() => setIsBottomSheetAvatarRefOpen(false)}
       >
-        <View className="flex-1 z-50 pt-6">
+        <View className="flex-1 z-50 pt-8">
           <View className="mx-5">
             {!loadingUpload ? (
               <>
@@ -440,7 +439,7 @@ export default function ProfileEdit() {
         onDidPresent={() => setIsBottomSheetRefOpen(true)}
         onDidDismiss={() => setIsBottomSheetRefOpen(false)}
       >
-        <View className="flex-1 z-50 pt-6">
+        <View className="flex-1 z-50 pt-8">
           {bottomSheetContent === 'gender' && (
             <View className="mx-5">
               {genderItems.map((item, index) => (
