@@ -1,4 +1,5 @@
-import { type ErrorHandler, ValidationError } from 'elysia'
+import type { ErrorHandler } from 'elysia'
+import { ValidationError } from 'elysia'
 import { ZodError } from 'zod'
 
 import { DomainError } from './errors/domain-error'

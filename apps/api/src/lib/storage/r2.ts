@@ -19,6 +19,12 @@ class CloudflareR2Service {
       )
     }
 
+    if (ENV.R2_ACCESS_KEY_ID === ENV.R2_SECRET_ACCESS_KEY) {
+      throw new Error(
+        'R2 credentials are invalid. R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY must be different values',
+      )
+    }
+
     this.s3Client = new S3Client({
       region: 'auto',
       endpoint: `https://${ENV.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -59,10 +65,14 @@ class CloudflareR2Service {
     catch (error: unknown) {
       const errorMessage
         = error instanceof Error ? error.message : 'Unknown error'
+      const errorMetadata = error && typeof error === 'object' && '$metadata' in error
+        ? error.$metadata
+        : undefined
       console.error('Error uploading to R2:', {
         key,
         bucket,
         error: errorMessage,
+        metadata: errorMetadata,
       })
       throw new Error(`Upload failed: ${errorMessage}`)
     }

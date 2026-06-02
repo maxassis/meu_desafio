@@ -12,11 +12,20 @@ export async function deleteAvatar(userId: string) {
     },
   })
 
-  if (!userData || !userData.avatarFilename) {
-    throw new NotFoundError('User not found or avatar does not exist')
+  if (!userData) {
+    throw new NotFoundError('User not found')
   }
 
-  await r2Service.deleteFile(userData.avatarFilename, bucketName)
+  if (!userData.avatarFilename) {
+    return { success: true }
+  }
+
+  try {
+    await r2Service.deleteFile(userData.avatarFilename, bucketName)
+  }
+  catch (error) {
+    console.warn('Error deleting avatar from R2:', error)
+  }
 
   await prisma.userData.update({
     where: {

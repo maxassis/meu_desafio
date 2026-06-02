@@ -125,7 +125,7 @@ export const usersRoutes = new Elysia({ prefix: '/users' })
     },
   )
   .delete(
-    '/upload-avatar',
+    '/delete-avatar',
     async ({ request }) => {
       const session = await getRequiredSession(request)
 

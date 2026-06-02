@@ -30,7 +30,7 @@ interface uploadAvatarResponse {
   avatar_filename: string
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const MAX_FILE_SIZE = 2 * 1024 * 1024
 
 async function getFileSize(uri: string) {
   try {
@@ -133,11 +133,6 @@ export default function ProfileEdit() {
       try {
         const { data } = await apiClient.delete<{ message?: string }>(
           '/users/delete-avatar',
-          {
-            data: {
-              filename: userConfig?.avatar_filename,
-            },
-          },
         )
         return data
       }
@@ -146,7 +141,7 @@ export default function ProfileEdit() {
         throw new Error(getErrorMessage(error, 'Erro ao deletar avatar'))
       }
       finally {
-        bottomSheetAvatarRef.current?.close()
+        bottomSheetAvatarRef.current?.dismiss()
         setLoadingUpload(false)
       }
     },
@@ -176,7 +171,7 @@ export default function ProfileEdit() {
       if (fileSize > MAX_FILE_SIZE) {
         Alert.alert(
           'Erro',
-          'O arquivo é muito grande. O tamanho máximo permitido é 5 MB.',
+          'O arquivo é muito grande. O tamanho máximo permitido é 2 MB.',
         )
         return
       }
@@ -425,8 +420,7 @@ export default function ProfileEdit() {
               </>
             ) : (
               <View
-                className="flex-row justify-center items-center h-full"
-                style={{ paddingBottom: insets.bottom }}
+                className="h-[102px] flex-row justify-center items-center"
               >
                 <Text className="font-inter-bold text-base mr-3">
                   Carregando...

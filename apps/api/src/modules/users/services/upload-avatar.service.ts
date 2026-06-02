@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer'
 import { cacheService } from '../../../lib/cache/cache'
 import { r2Service } from '../../../lib/storage/r2'
 import { prisma } from '../../../shared/db/prisma'
-import { BadRequestError, NotFoundError } from '../../../shared/errors'
+import { BadRequestError, NotFoundError, ServiceUnavailableError } from '../../../shared/errors'
 
 const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024
 const allowedAvatarTypes = {
@@ -45,12 +45,20 @@ export async function uploadAvatar(userId: string, file: File) {
   const fileBuffer = Buffer.from(await file.arrayBuffer())
   const bucketName = 'avatars'
 
-  await r2Service.uploadFile(
-    fileName,
-    fileBuffer,
-    file.type,
-    bucketName,
-  )
+  let avatarUrl: string
+
+  try {
+    avatarUrl = await r2Service.uploadFile(
+      fileName,
+      fileBuffer,
+      file.type,
+      bucketName,
+    )
+  }
+  catch (error) {
+    console.error('Avatar upload to R2 failed:', error)
+    throw new ServiceUnavailableError('Avatar upload is unavailable. Please try again later')
+  }
 
   if (userData.avatarFilename) {
     r2Service.deleteFile(userData.avatarFilename, bucketName).catch((error: unknown) => {
@@ -70,5 +78,8 @@ export async function uploadAvatar(userId: string, file: File) {
     cacheService.del(`user:profile:${userId}`),
   ])
 
-  return { success: true }
+  return {
+    avatar_url: avatarUrl,
+    avatar_filename: fileName,
+  }
 }
