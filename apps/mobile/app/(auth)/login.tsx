@@ -1,4 +1,4 @@
-import type { AuthSigninRequest } from '../../@types/auth-signin'
+import type { AuthSigninRequest } from '@/services/api-types'
 import { useMutation } from '@tanstack/react-query'
 import * as Linking from 'expo-linking'
 import { Link, useRouter } from 'expo-router'

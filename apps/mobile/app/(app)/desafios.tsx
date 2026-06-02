@@ -1,4 +1,4 @@
-import type { AllDesafios } from '../../@types/desafio-get-all-desafio'
+import type { AllDesafios } from '@/services/api-types'
 import { TrueSheet } from '@lodev09/react-native-true-sheet'
 import { useQuery } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -215,7 +215,8 @@ export default function DesafioSelect() {
             if (isBottomSheetOpen.current) {
               bottomSheetRef.current?.dismiss()
             }
-          }}>
+          }}
+          >
             <View className="h-[51px] justify-center items-center">
               <Text className="text-base mx-auto font-inter-bold">Voltar</Text>
             </View>

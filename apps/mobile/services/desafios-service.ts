@@ -1,6 +1,4 @@
-import type { AllDesafios } from '../@types/desafio-get-all-desafio'
-import type { RouteResponse } from '../@types/desafio-get-desafio'
-import type { BuyData } from '../@types/desafio-purchase-data'
+import type { AllDesafios, BuyData, RouteResponse } from './api-types'
 import { getEdenErrorMessage } from './api-client'
 import { edenClient } from './eden-client'
 

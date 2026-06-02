@@ -1,5 +1,4 @@
-import type { TasksGetResponse } from '../@types/tasks-get-tasks'
-import type { StravaActivity } from '@/@types/strava-activities'
+import type { StravaActivity, TasksGetResponse } from './api-types'
 import { getEdenErrorMessage } from './api-client'
 import { edenClient } from './eden-client'
 

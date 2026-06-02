@@ -1,7 +1,7 @@
 import type {
   StravaActivitiesResponse,
   StravaStatusResponse,
-} from '@/@types/strava-activities'
+} from './api-types'
 import { getEdenErrorMessage } from './api-client'
 import { edenClient } from './eden-client'
 

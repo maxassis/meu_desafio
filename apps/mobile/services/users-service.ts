@@ -1,10 +1,10 @@
 import type {
+  RankData,
+  UserData,
+  UserProfile,
   UsersEditUserdataRequest,
   UsersEditUserdataResponse,
-} from '../@types/users-edit-userdata'
-import type { RankData } from '../@types/users-get-ranking'
-import type { UserData } from '../@types/users-get-user-data'
-import type { UserProfile } from '../@types/users-get-user-profile'
+} from './api-types'
 import { getEdenErrorMessage } from './api-client'
 import { API_BASE_URL } from './api-config'
 import { authClient } from './auth-client'

@@ -1,6 +1,4 @@
-import type { RouteResponse } from '@/@types/desafio-get-desafio'
-import type { RankData } from '@/@types/users-get-ranking'
-import type { UserData } from '@/@types/users-get-user-data'
+import type { RankData, RouteResponse, UserData } from '@/services/api-types'
 import { TrueSheet } from '@lodev09/react-native-true-sheet'
 import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'

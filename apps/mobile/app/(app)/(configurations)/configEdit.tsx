@@ -1,4 +1,4 @@
-import type { UsersEditUserdataRequest } from '@/@types/users-edit-userdata'
+import type { UsersEditUserdataRequest } from '@/services/api-types'
 import { TrueSheet } from '@lodev09/react-native-true-sheet'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { cva } from 'class-variance-authority'
@@ -205,7 +205,6 @@ export default function ProfileEdit() {
         bottomSheetRef.current?.dismiss()
       if (!isBottomSheetSuccessRefOpen)
         bottomSheetSuccessRef.current?.present()
-      lottieRef.current?.play()
       queryClient.invalidateQueries({ queryKey: ['userData'] })
     },
     onError: (error) => {
@@ -492,11 +491,15 @@ export default function ProfileEdit() {
         detents={[0.35]}
         cornerRadius={20}
         backgroundColor="white"
-        onDidPresent={() => setIsBottomSheetSuccessRefOpen(true)}
+        onDidPresent={() => {
+          setIsBottomSheetSuccessRefOpen(true)
+          lottieRef.current?.reset()
+          lottieRef.current?.play()
+        }}
         onDidDismiss={() => setIsBottomSheetSuccessRefOpen(false)}
       >
-        <View className="flex-1 z-50 pt-6">
-          <View className="justify-center items-center px-5">
+        <View className="z-50 px-5 pb-6 pt-8">
+          <View className="items-center">
             <LottieView
               ref={lottieRef}
               source={require('../../../assets/lottie/check-lottie.json')}
@@ -512,7 +515,7 @@ export default function ProfileEdit() {
             </Text>
 
             <TouchableOpacity
-              className="w-full items-center justify-center h-[52px] rounded-[31px] text-black border mt-[26px] border-[#D9D9D9]"
+              className="w-full items-center justify-center h-[52px] rounded-[31px] text-black border mt-5 border-[#D9D9D9]"
               onPress={() => {
                 if (isBottomSheetSuccessRefOpen)
                   bottomSheetSuccessRef.current?.dismiss()

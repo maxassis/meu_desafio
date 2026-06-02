@@ -1,4 +1,4 @@
-import type { StravaActivity } from '@/@types/strava-activities'
+import type { StravaActivity } from '@/services/api-types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { router } from 'expo-router'
