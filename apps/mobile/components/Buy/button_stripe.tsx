@@ -2,7 +2,7 @@ import { useStripe } from '@stripe/stripe-react-native'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { ActivityIndicator, Alert, Text, TouchableOpacity } from 'react-native'
-import { API_BASE_URL } from '@/services/api-client'
+import { API_BASE_URL } from '@/services/api-config'
 import { fetchUserData } from '@/services/users-service'
 
 function AcceptDesafioButton({
