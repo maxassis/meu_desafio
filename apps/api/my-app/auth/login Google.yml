@@ -1,0 +1,28 @@
+info:
+  name: login Google
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: '{{baseUrl}}/api/auth/sign-in/social'
+  headers:
+    - name: credentials
+      value: include
+    - name: Origin
+      value: http://127.0.0.1:5500
+  body:
+    type: json
+    data: |-
+      {
+        "provider": "google",
+        "callbackURL": "{{baseUrl}}",
+        "disableRedirect": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

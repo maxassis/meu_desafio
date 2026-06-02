@@ -1,0 +1,23 @@
+info:
+  name: check-email
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/users/check-email"
+  headers:
+    - name: Origin
+      value: http://127.0.0.1:5500
+  body:
+    type: json
+    data: |-
+      {
+        "email": "teste@example.com"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

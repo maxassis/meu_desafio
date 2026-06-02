@@ -1,0 +1,22 @@
+info:
+  name: upload de avatar
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: '{{baseUrl}}/users/upload-avatar'
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value:
+          - /home/teddy/Imagens/BingWallpaper/20260215-MontereyHumpbacks_PT-BR6399797691_UHD.jpg
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

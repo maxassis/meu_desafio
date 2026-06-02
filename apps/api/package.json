@@ -1,0 +1,49 @@
+{
+  "name": "@meu-desafio/api",
+  "type": "module",
+  "version": "1.0.50",
+  "module": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "varlock run -- bun --watch src/server.ts",
+    "start": "varlock run -- bun src/server.ts",
+    "typegen": "varlock typegen",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "auth:generate": "better-auth generate --config src/lib/auth.ts --yes",
+    "prisma:generate": "varlock run -- prisma generate --schema prisma/schema.prisma",
+    "prisma:migrate": "varlock run -- prisma migrate dev --schema prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1032.0",
+    "@better-auth/expo": "^1.6.5",
+    "@better-auth/prisma-adapter": "^1.6.5",
+    "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/openapi": "^1.4.14",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "7",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.6",
+    "@sinclair/typebox": "^0.34.49",
+    "better-auth": "^1.6.5",
+    "elysia": "latest",
+    "lru-cache": "^11.1.0",
+    "nodemailer": "^8.0.5",
+    "pg": "^8.20.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "resend": "^6.12.2",
+    "varlock": "^1.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^8.2.0",
+    "@better-auth/cli": "^1.4.21",
+    "@eslint-react/eslint-plugin": "^3.0.0",
+    "@types/nodemailer": "^8.0.0",
+    "bun-types": "latest",
+    "eslint": "^10.4.0",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "prisma": "7"
+  }
+}

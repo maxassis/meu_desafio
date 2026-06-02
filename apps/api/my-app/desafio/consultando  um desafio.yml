@@ -1,0 +1,19 @@
+info:
+  name: consultando  um desafio
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: '{{baseUrl}}/desafio/cmorp57y50000gmybsc5cbtvg'
+  headers:
+    - name: Origin
+      value: http://127.0.0.1:5500
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

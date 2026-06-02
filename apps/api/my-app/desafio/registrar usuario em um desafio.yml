@@ -1,0 +1,15 @@
+info:
+  name: registrar usuario em um desafio
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/desafio/register-user-desafio/cmorp57y50000gmybsc5cbtvg"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

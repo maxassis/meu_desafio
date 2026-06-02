@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+@theme {
+  --color-bondis-black: #252823;
+  --color-bondis-green: #12FF55;
+  --color-bondis-text-gray: #EEEEEE;
+  --color-bondis-gray-secondary: #828282;
+  --color-bondis-gray-dark: #565656;
+  --color-bondis-overlay: rgba(0, 0, 0, 0.5);
+  --color-bondis-alert-red: #EB4335;
+
+  --font-inter-regular: 'Inter_400Regular';
+  --font-inter-bold: 'Inter_700Bold';
+  --font-anton-regular: 'Anton_400Regular';
+}
