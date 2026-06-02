@@ -15,7 +15,7 @@ import {
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView, LinearGradient } from '@/components/uniwind-components'
-import { apiClient, getErrorMessage } from '@/services/api-client'
+import { updateTask } from '@/services/tasks-service'
 import Left from '../../../assets/Icon-left.svg'
 import Outdoor from '../../../assets/Outdoor.svg'
 import useDesafioStore from '../../../store/desafio-store'
@@ -56,19 +56,13 @@ export default function CreateTaskGps() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      try {
-        const { data } = await apiClient.patch(`/tasks/update-task/${taskData?.id}`, {
-          name: nomeAtividade,
-          environment: taskData?.environment,
-          distanceKm: taskData ? +taskData.distanceKm : 0,
-          date: taskData?.date,
-          duration: taskData?.duration ? +taskData.duration : 0,
-        })
-        return data
-      }
-      catch (error) {
-        throw new Error(getErrorMessage(error, 'Falha ao atualizar tarefa'))
-      }
+      return await updateTask(taskData!.id, {
+        name: nomeAtividade,
+        environment: taskData?.environment as 'livre' | 'esteira' | undefined,
+        distanceKm: taskData ? +taskData.distanceKm : 0,
+        date: taskData?.date,
+        duration: taskData?.duration ? +taskData.duration : 0,
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['desafios'] })

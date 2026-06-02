@@ -12,7 +12,13 @@ const allowedAvatarTypes = {
   'image/webp': 'webp',
 } as const
 
-function validateAvatarFile(file: File) {
+export interface AvatarUploadFile {
+  type: string
+  size: number
+  arrayBuffer: () => Promise<ArrayBuffer>
+}
+
+function validateAvatarFile(file: AvatarUploadFile) {
   const extension = allowedAvatarTypes[file.type as keyof typeof allowedAvatarTypes]
 
   if (!extension) {
@@ -26,7 +32,7 @@ function validateAvatarFile(file: File) {
   return extension
 }
 
-export async function uploadAvatar(userId: string, file: File) {
+export async function uploadAvatar(userId: string, file: AvatarUploadFile) {
   if (!file.type) {
     throw new BadRequestError('No file provided or invalid format')
   }

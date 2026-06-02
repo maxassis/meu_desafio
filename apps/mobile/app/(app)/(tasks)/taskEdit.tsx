@@ -24,7 +24,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TimePickerModal } from '@/components'
 import { KeyboardAwareScrollView, LinearGradient } from '@/components/uniwind-components'
-import { apiClient, getErrorMessage } from '@/services/api-client'
+import { checkTaskCompletion, updateTask as updateTaskRequest } from '@/services/tasks-service'
 import Down from '../../../assets/down.svg'
 import Left from '../../../assets/Icon-left.svg'
 import Indoor from '../../../assets/Indoor.svg'
@@ -44,7 +44,7 @@ interface Distance {
 
 export default function TaskEdit() {
   const [modalVisible, setModalVisible] = useState(false)
-  const [ambience, setAmbience] = useState('livre')
+  const [ambience, setAmbience] = useState<'livre' | 'esteira'>('livre')
   const [distance, setDistance] = useState<{
     kilometers: number
     meters: number
@@ -70,18 +70,10 @@ export default function TaskEdit() {
   // Mutations
   const checkCompletionMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const { data } = await apiClient.post('/tasks/check-completion', {
-          inscriptionId: taskData!.inscriptionId,
-          distance: +`${distance.kilometers}.${distance.meters}`,
-        })
-        return data
-      }
-      catch (error) {
-        throw new Error(
-          getErrorMessage(error, 'Erro ao verificar conclusão do desafio'),
-        )
-      }
+      return await checkTaskCompletion({
+        inscriptionId: taskData!.inscriptionId,
+        distance: +`${distance.kilometers}.${distance.meters}`,
+      })
     },
     onSuccess: (data) => {
       if (data.willCompleteChallenge) {
@@ -116,22 +108,16 @@ export default function TaskEdit() {
   const updateTaskMutation = useMutation({
     mutationFn: async () => {
       const agora = dayjs() // Hora atual do sistema
-      try {
-        const { data } = await apiClient.patch(`/tasks/update-task/${taskData!.id}`, {
-          name: activityName,
-          distanceKm: +`${distance.kilometers}.${distance.meters}`,
-          environment: ambience,
-          date: initialDate
-            ? taskData!.date
-            : dayjs(`${day.dateString} ${agora.format('HH:mm:ss')}`).toISOString(),
-          duration: convertTimeToSeconds(selectedTime),
-          local,
-        })
-        return data
-      }
-      catch (error) {
-        throw new Error(getErrorMessage(error, 'Falha ao atualizar tarefa'))
-      }
+      return await updateTaskRequest(taskData!.id, {
+        name: activityName,
+        distanceKm: +`${distance.kilometers}.${distance.meters}`,
+        environment: ambience,
+        date: initialDate
+          ? taskData!.date
+          : dayjs(`${day.dateString} ${agora.format('HH:mm:ss')}`).toISOString(),
+        duration: convertTimeToSeconds(selectedTime),
+        local,
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['desafios'] })
@@ -209,7 +195,7 @@ export default function TaskEdit() {
     })
     setCalories(taskData.calories?.toString() ?? '')
     setLocal(taskData.local ?? '')
-    setAmbience(taskData.environment)
+    setAmbience(taskData.environment as 'livre' | 'esteira')
     ChangeDistancePicker()
     setInitialDate(formatDate(`${taskData.date}`))
     initialDate

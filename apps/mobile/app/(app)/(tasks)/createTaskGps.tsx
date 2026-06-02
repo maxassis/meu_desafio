@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '@/components/button'
 import { LinearGradient } from '@/components/uniwind-components'
-import { apiClient, getErrorMessage } from '@/services/api-client'
+import { createTask } from '@/services/tasks-service'
 import { useTrackerStore } from '@/store/rastreador-store'
 import { convertSecondsToTimeStringWithSeconds } from '@/utils/timeUtils'
 import Outdoor from '../../../assets/Outdoor.svg'
@@ -22,7 +22,7 @@ import useDesafioStore from '../../../store/desafio-store'
 interface DadosTarefaGps {
   name: string
   distance: number
-  environment: string
+  environment: 'livre' | 'esteira'
   calories: number
   inscriptionId: number
   date: string | null
@@ -86,16 +86,7 @@ export default function CreateTaskGps() {
     mutationFn: async (
       dadosTarefa: DadosTarefaGps,
     ): Promise<CreateTaskApiResponse> => {
-      try {
-        const { data } = await apiClient.post<CreateTaskApiResponse>(
-          '/tasks/create',
-          dadosTarefa,
-        )
-        return data
-      }
-      catch (error) {
-        throw new Error(getErrorMessage(error, 'Falha ao criar tarefa'))
-      }
+      return await createTask(dadosTarefa) as unknown as CreateTaskApiResponse
     },
     onSuccess: (data: CreateTaskApiResponse) => {
       const metaAtingida = data.challengeCompleted
@@ -272,7 +263,8 @@ export default function CreateTaskGps() {
             if (isBottomSheetOpen.current) {
               bottomSheetRef.current?.dismiss()
             }
-          }}>
+          }}
+          >
             <View className="h-[51px] justify-center items-center">
               <Text className="text-base mx-auto font-inter-bold">
                 Voltar

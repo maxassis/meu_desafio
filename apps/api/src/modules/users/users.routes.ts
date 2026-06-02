@@ -17,6 +17,19 @@ import {
   uploadAvatar,
 } from './services'
 
+function isAvatarUploadFile(value: unknown): value is Parameters<typeof uploadAvatar>[1] {
+  return Boolean(
+    value
+    && typeof value === 'object'
+    && 'type' in value
+    && typeof value.type === 'string'
+    && 'size' in value
+    && typeof value.size === 'number'
+    && 'arrayBuffer' in value
+    && typeof value.arrayBuffer === 'function',
+  )
+}
+
 export const usersRoutes = new Elysia({ prefix: '/users' })
   .post(
     '/check-email',
@@ -107,11 +120,13 @@ export const usersRoutes = new Elysia({ prefix: '/users' })
     '/upload-avatar',
     async ({ body, request }) => {
       const session = await getRequiredSession(request)
-      const file = body && typeof body === 'object' && 'file' in body
-        ? body.file
-        : undefined
+      const file = body instanceof FormData
+        ? body.get('file')
+        : body && typeof body === 'object' && 'file' in body
+          ? body.file
+          : undefined
 
-      if (!(file instanceof File)) {
+      if (!isAvatarUploadFile(file)) {
         throw new BadRequestError('No file provided or invalid format')
       }
 

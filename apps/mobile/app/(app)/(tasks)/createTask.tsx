@@ -22,7 +22,7 @@ import { SystemBars } from 'react-native-edge-to-edge'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TimePickerModal } from '@/components'
 import { KeyboardAwareScrollView, LinearGradient } from '@/components/uniwind-components'
-import { apiClient, getErrorMessage } from '@/services/api-client'
+import { createTask } from '@/services/tasks-service'
 import Left from '../../../assets/arrow-left.svg'
 import Down from '../../../assets/down.svg'
 import Indoor from '../../../assets/Indoor.svg'
@@ -42,7 +42,7 @@ interface Distancia {
 interface DadosTarefa {
   name: string
   distance: number
-  environment: string
+  environment: 'livre' | 'esteira'
   calories: number
   inscriptionId: number
   date: string | null
@@ -50,14 +50,9 @@ interface DadosTarefa {
   local: string | null
 }
 
-interface CheckCompletion {
-  inscriptionId: number
-  distance: number
-}
-
 export default function TaskCreate() {
   const [modalVisible, setModalVisible] = useState(false)
-  const [ambiente, setAmbiente] = useState('livre')
+  const [ambiente, setAmbiente] = useState<'livre' | 'esteira'>('livre')
   const [distancia, setDistancia] = useState<{
     kilometers: number
     meters: number
@@ -86,14 +81,8 @@ export default function TaskCreate() {
   const insets = useSafeAreaInsets()
 
   const criarTarefaMutation = useMutation({
-    mutationFn: async (dadosTarefa: CheckCompletion) => {
-      try {
-        const { data } = await apiClient.post('/tasks/create', dadosTarefa)
-        return data
-      }
-      catch (error) {
-        throw new Error(getErrorMessage(error, 'Falha ao criar tarefa'))
-      }
+    mutationFn: async (dadosTarefa: DadosTarefa) => {
+      return await createTask(dadosTarefa)
     },
     onSuccess: (data) => {
       limparInputs()

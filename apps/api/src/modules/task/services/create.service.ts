@@ -73,6 +73,7 @@ export async function createTask(input: CreateTaskInput, userId: string) {
 
     return {
       message: 'Task created successfully',
+      challengeCompleted: isCompleted,
       task,
     }
   })

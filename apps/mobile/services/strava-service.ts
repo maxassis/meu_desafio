@@ -2,36 +2,37 @@ import type {
   StravaActivitiesResponse,
   StravaStatusResponse,
 } from '@/@types/strava-activities'
-import { apiClient, getErrorMessage } from './api-client'
+import { getEdenErrorMessage } from './api-client'
+import { edenClient } from './eden-client'
 
 export async function fetchStravaStatus(): Promise<StravaStatusResponse> {
-  try {
-    const { data } = await apiClient.get<StravaStatusResponse>('/integrations/strava/status')
-    return data
+  const { data, error } = await edenClient.integrations.strava.status.get()
+
+  if (error) {
+    throw new Error(getEdenErrorMessage(error, 'Erro ao verificar conexão com Strava'))
   }
-  catch (error) {
-    throw new Error(getErrorMessage(error, 'Erro ao verificar conexão com Strava'))
-  }
+
+  return data as StravaStatusResponse
 }
 
 export async function disconnectStrava() {
-  try {
-    const { data } = await apiClient.delete('/integrations/strava')
-    return data
+  const { data, error } = await edenClient.integrations.strava.delete()
+
+  if (error) {
+    throw new Error(getEdenErrorMessage(error, 'Erro ao desconectar Strava'))
   }
-  catch (error) {
-    throw new Error(getErrorMessage(error, 'Erro ao desconectar Strava'))
-  }
+
+  return data
 }
 
 export async function fetchStravaActivities(inscriptionId: number): Promise<StravaActivitiesResponse> {
-  try {
-    const { data } = await apiClient.get<StravaActivitiesResponse>(
-      `/integrations/strava/activities?inscriptionId=${inscriptionId}`,
-    )
-    return data
+  const { data, error } = await edenClient.integrations.strava.activities.get({
+    query: { inscriptionId },
+  })
+
+  if (error) {
+    throw new Error(getEdenErrorMessage(error, 'Erro ao buscar atividades do Strava'))
   }
-  catch (error) {
-    throw new Error(getErrorMessage(error, 'Erro ao buscar atividades do Strava'))
-  }
+
+  return data as unknown as StravaActivitiesResponse
 }

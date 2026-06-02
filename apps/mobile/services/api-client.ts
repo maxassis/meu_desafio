@@ -1,7 +1,7 @@
 import axios from 'axios'
-import Constants from 'expo-constants'
+import { API_BASE_URL } from './api-config'
 
-export const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl
+export { API_BASE_URL }
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -30,5 +30,24 @@ export function getErrorMessage(error: unknown, fallback: string) {
   if (axios.isAxiosError(error)) {
     return error.response?.data?.message || error.message || fallback
   }
+  return fallback
+}
+
+export function getEdenErrorMessage(error: unknown, fallback: string) {
+  if (error && typeof error === 'object' && 'value' in error) {
+    const value = (error as { value?: unknown }).value
+
+    if (value && typeof value === 'object' && 'message' in value) {
+      const message = (value as { message?: unknown }).message
+      if (typeof message === 'string' && message.length > 0) {
+        return message
+      }
+    }
+
+    if (typeof value === 'string' && value.length > 0) {
+      return value
+    }
+  }
+
   return fallback
 }
