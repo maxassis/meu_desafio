@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "meu-desafio-monorepo",
+      "devDependencies": {
+        "@colbymchenry/codegraph": "^0.9.9",
+      },
     },
     "apps/api": {
       "name": "@meu-desafio/api",
@@ -446,6 +449,20 @@
     "@clack/core": ["@clack/core@1.4.1", "", { "dependencies": { "fast-wrap-ansi": "^0.2.0", "sisteransi": "^1.0.5" } }, "sha512-FILJa1gGKEFTGZAJE9RpVhrjKz3c3h4ar60dSv6cGuDqufQ84YEIS3GAGvZiN+H6yaLbbvTFNejjCC4tXpZEuw=="],
 
     "@clack/prompts": ["@clack/prompts@1.5.1", "", { "dependencies": { "@clack/core": "1.4.1", "fast-string-width": "^3.0.2", "fast-wrap-ansi": "^0.2.0", "sisteransi": "^1.0.5" } }, "sha512-zccHj2z2oCCO4yrDiRSlFOxWerGqRiysP7a5jPK6uoI9URKAquwY42Dd/iUP8JWHxEzdRe4TlbvZCo8z1/mhrw=="],
+
+    "@colbymchenry/codegraph": ["@colbymchenry/codegraph@0.9.9", "", { "optionalDependencies": { "@colbymchenry/codegraph-darwin-arm64": "0.9.9", "@colbymchenry/codegraph-darwin-x64": "0.9.9", "@colbymchenry/codegraph-linux-arm64": "0.9.9", "@colbymchenry/codegraph-linux-x64": "0.9.9", "@colbymchenry/codegraph-win32-arm64": "0.9.9", "@colbymchenry/codegraph-win32-x64": "0.9.9" }, "bin": { "codegraph": "npm-shim.js" } }, "sha512-23Dl9q0RHKVhJRp+Y823GfmQJjcPiRycoKN7TkaI8eJitluRvieoVlclPILqua8znvkAw9KevYziFfK3k74CBQ=="],
+
+    "@colbymchenry/codegraph-darwin-arm64": ["@colbymchenry/codegraph-darwin-arm64@0.9.9", "", { "os": "darwin", "cpu": "arm64" }, "sha512-Mu6xhG4bF1OLeTqN2eSI5U8z2esymK/RjxP3T8cCigA4YprDIvd3XSGmTZREbDNRCuqrCi0R1LCJ7fsdFfpAPA=="],
+
+    "@colbymchenry/codegraph-darwin-x64": ["@colbymchenry/codegraph-darwin-x64@0.9.9", "", { "os": "darwin", "cpu": "x64" }, "sha512-xShaChiPJsajmBxvr1yP2XWsYstq0kJzHwQmiUG1huWrE14tP9NJnJ36hsbzHfHiqwBOJo2+5MZHuXmmzJa/vQ=="],
+
+    "@colbymchenry/codegraph-linux-arm64": ["@colbymchenry/codegraph-linux-arm64@0.9.9", "", { "os": "linux", "cpu": "arm64" }, "sha512-zccx1m3gGB2jAGfz41U+1GQNK12mtLGuX48XyZXiyQIGFsJQCFS8v/OvShAfPygSGhUr3zKMetbkMnztp7ULtg=="],
+
+    "@colbymchenry/codegraph-linux-x64": ["@colbymchenry/codegraph-linux-x64@0.9.9", "", { "os": "linux", "cpu": "x64" }, "sha512-vQfe5VdSQb/cVo1pwO12FyzTNaDIXtN3dLuAS/LIPsg2tQVyT9fwr10QmL10qWUNBShjgnRsomHdMG7hCjW3Yg=="],
+
+    "@colbymchenry/codegraph-win32-arm64": ["@colbymchenry/codegraph-win32-arm64@0.9.9", "", { "os": "win32", "cpu": "arm64" }, "sha512-U2QlTT434ulbEw6sTJVS+VNhjJUbZqCnw8tXuXSKkcuzGPZq/Hxoofe9UpY77+J9hAJu9PwwiWjEEaiDX9yb1w=="],
+
+    "@colbymchenry/codegraph-win32-x64": ["@colbymchenry/codegraph-win32-x64@0.9.9", "", { "os": "win32", "cpu": "x64" }, "sha512-N7Xgt80BeEy78nNeqHaUgcsngxmy1Hty570QSa4hOh4zl6z6v6n7i9ZSUfraktESVUkfmMbUwoqfEzVwUbB0/g=="],
 
     "@e18e/eslint-plugin": ["@e18e/eslint-plugin@0.4.1", "", { "dependencies": { "empathic": "^2.0.0", "module-replacements": "^3.0.0-beta.7", "semver": "^7.7.4" }, "peerDependencies": { "eslint": "^9.0.0 || ^10.0.0", "oxlint": "^1.61.0" }, "optionalPeers": ["eslint", "oxlint"] }, "sha512-Re00N8ad1HsNrzpuIX7Bhdr8RSaFWp6VgwJUEJF+47+D1CMcXoS7VNRkIG23e46pddhgxWU0cWk4wYiQIuMHqQ=="],
 

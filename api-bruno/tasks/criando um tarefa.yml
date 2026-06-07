@@ -5,18 +5,18 @@ info:
 
 http:
   method: POST
-  url: '{{baseUrl}}/tasks/create'
+  url: "{{baseUrl}}/tasks/create"
   body:
     type: json
     data: |-
       {
-        "name": "primeira task",
+        "name": "quarta task",
         "calories": 400,
-        "distance": 3,
+        "distance": 1,
         "inscriptionId": 1,
         "environment": "livre",
-        "duration": 4,
-        "date": "2024-08-09T14:30:00Z",
+        "duration": 1800,
+        "date": "2026-06-05T14:30:00Z",
         "local": "São Paulo"
       }
   auth: inherit

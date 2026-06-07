@@ -4,9 +4,8 @@ import * as Sharing from 'expo-sharing'
 import { useRef, useState } from 'react'
 import { Alert, Text, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import ViewShot from 'react-native-view-shot'
-import { Image } from '@/components/uniwind-components'
+import { Image, SafeAreaView } from '@/components/uniwind-components'
 import { fetchAllDesafios } from '@/services/desafios-service'
 import useDesafioStore from '../../../store/desafio-store'
 
@@ -69,7 +68,7 @@ export default function TaskCreatedSuccess() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 px-5 justify-center">
+      <View className="flex-1 w-full px-5 justify-center items-center">
 
         {/* Conteúdo a ser capturado pelo ViewShot */}
         <ViewShot
@@ -81,7 +80,7 @@ export default function TaskCreatedSuccess() {
 
           }}
           // className="bg-white py-10 px-5 rounded-lg"
-          style={{ backgroundColor: 'white', padding: 10, borderRadius: 8 }}
+          style={{ backgroundColor: 'white', padding: 10, borderRadius: 8, width: '100%' }}
         >
           <Image
             className="w-[62px] h-[62px] mx-auto"
@@ -134,7 +133,7 @@ export default function TaskCreatedSuccess() {
         </ViewShot>
 
         {/* Botões fora do ViewShot */}
-        <View className="mt-8">
+        <View className="mt-8 w-full">
           <TouchableOpacity
             className="h-[52px] flex-row bg-bondis-green rounded-full justify-center items-center"
             onPress={handleShare}
