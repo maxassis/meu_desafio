@@ -158,7 +158,7 @@ function RankingBottomSheet({
             </View>
 
             <Text className="mt-6 font-anton-regular text-lg">
-              Classificação Geral
+              Classificação dos últimos 15 dias
             </Text>
 
             {/* Container principal do pódio com overflow visible */}

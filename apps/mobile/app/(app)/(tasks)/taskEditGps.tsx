@@ -56,11 +56,11 @@ export default function CreateTaskGps() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      return await updateTask(taskData!.id, {
+      return updateTask(taskData!.id, {
         name: nomeAtividade,
-        environment: taskData?.environment as 'livre' | 'esteira' | undefined,
+        environment: taskData?.environment === 'esteira' ? 'esteira' : 'livre',
         distanceKm: taskData ? +taskData.distanceKm : 0,
-        date: taskData?.date,
+        date: String(taskData?.date),
         duration: taskData?.duration ? +taskData.duration : 0,
       })
     },

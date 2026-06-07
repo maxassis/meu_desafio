@@ -66,6 +66,7 @@ export const taskRoutes = new Elysia({ prefix: '/tasks' })
         session.user.id,
         body.inscriptionId,
         body.distance,
+        body.taskId,
       )
     },
     {

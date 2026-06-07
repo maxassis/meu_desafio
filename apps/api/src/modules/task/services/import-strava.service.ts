@@ -109,6 +109,7 @@ export async function importStravaTasks(input: ImportStravaTasksInput, userId: s
 
   await Promise.allSettled([
     cacheService.del(`desafio:${userInscription.desafio.id}`),
+    cacheService.del(`desafio:${userInscription.desafio.id}:ranking:15d`),
     cacheService.del(`user:${userId}:desafios`),
     cacheService.del(`user:${userId}:inscription:${input.inscriptionId}:tasks`),
   ])

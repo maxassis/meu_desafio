@@ -1,10 +1,6 @@
 info:
   name: strava
   type: folder
-  seq: 1
+  seq: 2
 
-contents:
-  - listar atividades
-  - status
-  - desconectar
-  - importar atividades
+request: {}

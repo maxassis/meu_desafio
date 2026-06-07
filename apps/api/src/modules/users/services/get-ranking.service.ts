@@ -4,6 +4,7 @@ import { prisma } from '../../../shared/db/prisma'
 import { NotFoundError } from '../../../shared/errors'
 
 const CACHE_TTL_SECONDS = 600
+const RANKING_WINDOW_DAYS = 15
 
 function getAvatarUrl(avatarFilename: string | null) {
   if (!avatarFilename || !ENV.R2_PUBLIC_URL_AVATARS) {
@@ -21,18 +22,11 @@ interface RankingItem {
   totalDistance: number
   totalDurationSeconds: number
   totalTasks: number
-  progress: number
-  progressPercent: number
-  daysSinceStart: number
-  dailyProgressRate: number
   avgSpeed: number
-  completed: boolean
-  completionBonus: number
-  finalScore: number
 }
 
 export async function getRanking(desafioId: string): Promise<RankingItem[]> {
-  const cacheKey = `desafio:${desafioId}:ranking`
+  const cacheKey = `desafio:${desafioId}:ranking:15d`
 
   const cached = await cacheService.get<RankingItem[]>(cacheKey)
   if (cached) {
@@ -44,7 +38,6 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
       id: desafioId,
     },
     select: {
-      distance: true,
       id: true,
     },
   })
@@ -52,6 +45,10 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
   if (!desafio) {
     throw new NotFoundError(`Challenge with ID ${desafioId} not found`)
   }
+
+  const now = new Date()
+  const startDate = new Date(now)
+  startDate.setDate(startDate.getDate() - RANKING_WINDOW_DAYS)
 
   const inscriptions = await prisma.inscription.findMany({
     where: {
@@ -70,6 +67,23 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
         },
       },
       tasks: {
+        where: {
+          OR: [
+            {
+              date: {
+                gte: startDate,
+                lte: now,
+              },
+            },
+            {
+              date: null,
+              createdAt: {
+                gte: startDate,
+                lte: now,
+              },
+            },
+          ],
+        },
         select: {
           createdAt: true,
           date: true,
@@ -81,14 +95,8 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
           { createdAt: 'asc' },
         ],
       },
-      _count: {
-        select: { tasks: true },
-      },
     },
   })
-
-  const now = new Date()
-  const challengeDistance = Number(desafio.distance)
 
   const rankings = inscriptions.map((inscription) => {
     const totalDistance = inscription.tasks.reduce(
@@ -100,35 +108,6 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
       (sum, task) => sum + Number(task.duration),
       0,
     )
-
-    const firstTask = inscription.tasks[0]
-    const startDate = firstTask
-      ? new Date(firstTask.date ?? firstTask.createdAt)
-      : now
-
-    const daysSinceStart = Math.max(
-      1,
-      Math.ceil(
-        (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
-      ),
-    )
-
-    const progress = Number(inscription.progress)
-    const progressPercent = challengeDistance > 0
-      ? (progress / challengeDistance) * 100
-      : 0
-    const dailyProgressRate = progressPercent / daysSinceStart
-    const completedInDays = inscription.completedAt
-      ? Math.ceil(
-          (new Date(inscription.completedAt).getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
-        )
-      : 0
-
-    const completionBonus = inscription.completed && inscription.completedAt
-      ? 100 * (1 - completedInDays / 30)
-      : 0
-
-    const finalScore = dailyProgressRate + completionBonus
     const avgSpeed = totalDurationSeconds > 0
       ? totalDistance / (totalDurationSeconds / 3600)
       : 0
@@ -139,20 +118,24 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
       userAvatar: getAvatarUrl(inscription.user.userData?.avatarFilename ?? null),
       totalDistance: Number(totalDistance.toFixed(2)),
       totalDurationSeconds: Number(totalDurationSeconds.toFixed(2)),
-      totalTasks: inscription._count.tasks,
-      progress,
-      progressPercent: Number(progressPercent.toFixed(2)),
-      daysSinceStart,
-      dailyProgressRate: Number(dailyProgressRate.toFixed(2)),
+      totalTasks: inscription.tasks.length,
       avgSpeed: Number(avgSpeed.toFixed(2)),
-      completed: inscription.completed,
-      completionBonus: Number(completionBonus.toFixed(2)),
-      finalScore: Number(finalScore.toFixed(2)),
     }
   })
 
   const finalRankings = rankings
-    .sort((a, b) => b.finalScore - a.finalScore)
+    .filter(user => user.totalTasks > 0)
+    .sort((a, b) => {
+      if (b.totalDistance !== a.totalDistance) {
+        return b.totalDistance - a.totalDistance
+      }
+
+      if (a.totalDurationSeconds !== b.totalDurationSeconds) {
+        return a.totalDurationSeconds - b.totalDurationSeconds
+      }
+
+      return b.totalTasks - a.totalTasks
+    })
     .map((user, index) => ({
       position: index + 1,
       ...user,

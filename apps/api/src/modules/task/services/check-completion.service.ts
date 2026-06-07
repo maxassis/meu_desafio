@@ -5,6 +5,7 @@ export async function checkCompletion(
   userId: string,
   inscriptionId: number,
   distanceCovered: number,
+  taskId?: number,
 ) {
   const inscription = await prisma.inscription.findFirst({
     where: {
@@ -25,10 +26,36 @@ export async function checkCompletion(
   }
 
   const currentProgress = Number(inscription.progress)
-  const totalProgress = currentProgress + distanceCovered
+  const currentTaskDistance = taskId
+    ? await getCurrentTaskDistance(userId, inscriptionId, taskId)
+    : 0
+  const totalProgress = currentProgress - currentTaskDistance + distanceCovered
   const challengeDistance = Number(inscription.desafio.distance)
 
   return {
     willCompleteChallenge: totalProgress >= challengeDistance,
   }
+}
+
+async function getCurrentTaskDistance(
+  userId: string,
+  inscriptionId: number,
+  taskId: number,
+) {
+  const task = await prisma.task.findFirst({
+    where: {
+      id: taskId,
+      userId,
+      inscriptionId,
+    },
+    select: {
+      distanceKm: true,
+    },
+  })
+
+  if (!task) {
+    throw new NotFoundError('Task not found or does not belong to the user')
+  }
+
+  return Number(task.distanceKm)
 }

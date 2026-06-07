@@ -27,9 +27,7 @@ export const desafioRoutes = new Elysia({ prefix: '/desafio' })
   )
   .post(
     '/create',
-    async ({ body, request }) => {
-      await getRequiredSession(request)
-
+    async ({ body }) => {
       const files = Array.isArray(body.images)
         ? body.images
         : body.images

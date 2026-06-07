@@ -62,8 +62,9 @@ export async function deleteTask(userId: string, taskId: number) {
     },
   })
 
-  await Promise.all([
+  await Promise.allSettled([
     cacheService.del(`desafio:${task.inscription.desafio.id}`),
+    cacheService.del(`desafio:${task.inscription.desafio.id}:ranking:15d`),
     cacheService.del(`user:${userId}:desafios`),
     cacheService.del(`user:${userId}:inscription:${inscriptionId}:tasks`),
     cacheService.del(`user:profile:${userId}`),

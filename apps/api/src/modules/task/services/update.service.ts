@@ -81,6 +81,7 @@ export async function updateTask(userId: string, taskId: number, input: UpdateTa
 
   await Promise.allSettled([
     cacheService.del(`desafio:${task.inscription.desafio.id}`),
+    cacheService.del(`desafio:${task.inscription.desafio.id}:ranking:15d`),
     cacheService.del(`user:${userId}:desafios`),
     cacheService.del(`user:${userId}:inscription:${task.inscriptionId}:tasks`),
     cacheService.del(`user:profile:${userId}`),

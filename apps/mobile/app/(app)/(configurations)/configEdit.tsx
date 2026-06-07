@@ -30,6 +30,22 @@ interface uploadAvatarResponse {
   avatar_filename: string
 }
 
+type GenderValue = 'homem' | 'mulher' | 'nao_binario' | 'prefiro_nao_responder'
+type SportsValue = 'corrida' | 'bicicleta'
+
+function parseGenderValue(value: string | null | undefined): GenderValue | '' {
+  return value === 'homem'
+    || value === 'mulher'
+    || value === 'nao_binario'
+    || value === 'prefiro_nao_responder'
+    ? value
+    : ''
+}
+
+function parseSportsValue(value: string | null | undefined): SportsValue | '' {
+  return value === 'corrida' || value === 'bicicleta' ? value : ''
+}
+
 const MAX_FILE_SIZE = 2 * 1024 * 1024
 
 async function getFileSize(uri: string) {
@@ -62,16 +78,16 @@ export default function ProfileEdit() {
   const bottomSheetAvatarRef = useRef<TrueSheet>(null)
   const bottomSheetSuccessRef = useRef<TrueSheet>(null)
 
-  const [genderValue, setGenderValue] = useState('')
-  const [genderItems] = useState([
+  const [genderValue, setGenderValue] = useState<GenderValue | ''>('')
+  const [genderItems] = useState<{ label: string, value: GenderValue }[]>([
     { label: 'Homem', value: 'homem' },
     { label: 'Mulher', value: 'mulher' },
     { label: 'Não binario', value: 'nao_binario' },
     { label: 'Prefiro não responder', value: 'prefiro_nao_responder' },
   ])
 
-  const [sportsValue, setSportsValue] = useState('')
-  const [sportsItems] = useState([
+  const [sportsValue, setSportsValue] = useState<SportsValue | ''>('')
+  const [sportsItems] = useState<{ label: string, value: SportsValue }[]>([
     { label: 'Corrida', value: 'corrida' },
     { label: 'Bicicleta', value: 'bicicleta' },
   ])
@@ -86,8 +102,8 @@ export default function ProfileEdit() {
 
   useEffect(() => {
     if (userConfig) {
-      setGenderValue(userConfig.gender ?? '')
-      setSportsValue(userConfig.sport ?? '')
+      setGenderValue(parseGenderValue(userConfig.gender))
+      setSportsValue(parseSportsValue(userConfig.sport))
       setNameValue(userConfig.full_name ?? '')
       setBioValue(userConfig.bio ?? '')
       setUnmaskedValue(userConfig.birthDate ?? '')
@@ -198,12 +214,14 @@ export default function ProfileEdit() {
       return editUserData(payload)
     },
     onSuccess: () => {
+      console.warn('[edit-user-data] alteracoes salvas com sucesso')
       if (isBottomSheetAvatarRefOpen)
         bottomSheetAvatarRef.current?.dismiss()
       if (isBottomSheetRefOpen)
         bottomSheetRef.current?.dismiss()
       if (!isBottomSheetSuccessRefOpen)
         bottomSheetSuccessRef.current?.present()
+      lottieRef.current?.play()
       queryClient.invalidateQueries({ queryKey: ['userData'] })
     },
     onError: (error) => {

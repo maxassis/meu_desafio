@@ -70,8 +70,9 @@ export default function TaskEdit() {
   // Mutations
   const checkCompletionMutation = useMutation({
     mutationFn: async () => {
-      return await checkTaskCompletion({
+      return checkTaskCompletion({
         inscriptionId: taskData!.inscriptionId,
+        taskId: taskData!.id,
         distance: +`${distance.kilometers}.${distance.meters}`,
       })
     },
@@ -108,12 +109,12 @@ export default function TaskEdit() {
   const updateTaskMutation = useMutation({
     mutationFn: async () => {
       const agora = dayjs() // Hora atual do sistema
-      return await updateTaskRequest(taskData!.id, {
+      return updateTaskRequest(taskData!.id, {
         name: activityName,
         distanceKm: +`${distance.kilometers}.${distance.meters}`,
         environment: ambience,
         date: initialDate
-          ? taskData!.date
+          ? String(taskData!.date)
           : dayjs(`${day.dateString} ${agora.format('HH:mm:ss')}`).toISOString(),
         duration: convertTimeToSeconds(selectedTime),
         local,
@@ -195,7 +196,7 @@ export default function TaskEdit() {
     })
     setCalories(taskData.calories?.toString() ?? '')
     setLocal(taskData.local ?? '')
-    setAmbience(taskData.environment as 'livre' | 'esteira')
+    setAmbience(taskData.environment === 'esteira' ? 'esteira' : 'livre')
     ChangeDistancePicker()
     setInitialDate(formatDate(`${taskData.date}`))
     initialDate

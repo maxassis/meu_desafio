@@ -10,6 +10,7 @@ import { router } from 'expo-router'
 import { useRef, useState } from 'react'
 import {
   ActivityIndicator,
+  Alert,
   Modal,
   Pressable,
   Text,
@@ -22,7 +23,7 @@ import { SystemBars } from 'react-native-edge-to-edge'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TimePickerModal } from '@/components'
 import { KeyboardAwareScrollView, LinearGradient } from '@/components/uniwind-components'
-import { createTask } from '@/services/tasks-service'
+import { checkTaskCompletion, createTask } from '@/services/tasks-service'
 import Left from '../../../assets/arrow-left.svg'
 import Down from '../../../assets/down.svg'
 import Indoor from '../../../assets/Indoor.svg'
@@ -82,7 +83,7 @@ export default function TaskCreate() {
 
   const criarTarefaMutation = useMutation({
     mutationFn: async (dadosTarefa: DadosTarefa) => {
-      return await createTask(dadosTarefa)
+      return createTask(dadosTarefa)
     },
     onSuccess: (data) => {
       limparInputs()
@@ -106,6 +107,44 @@ export default function TaskCreate() {
     },
     onError: (erro) => {
       console.error('Erro ao criar tarefa:', erro)
+    },
+  })
+
+  const checkCompletionMutation = useMutation<
+    { willCompleteChallenge: boolean },
+    Error,
+    DadosTarefa
+  >({
+    mutationFn: async (dadosTarefa) => {
+      return checkTaskCompletion({
+        inscriptionId: dadosTarefa.inscriptionId,
+        distance: dadosTarefa.distance,
+      })
+    },
+    onSuccess: (data, dadosTarefa) => {
+      if (data.willCompleteChallenge) {
+        Alert.alert(
+          'Atenção',
+          'Ao criar esta tarefa, você concluirá o desafio. Uma vez concluído, não será mais possível adicionar novas tarefas.',
+          [
+            {
+              text: 'Cancelar',
+              style: 'cancel',
+            },
+            {
+              text: 'Concluir',
+              onPress: () => criarTarefaMutation.mutate(dadosTarefa),
+            },
+          ],
+          { cancelable: true },
+        )
+      }
+      else {
+        criarTarefaMutation.mutate(dadosTarefa)
+      }
+    },
+    onError: () => {
+      Alert.alert('Erro', 'Não foi possível verificar a conclusão do desafio.')
     },
   })
 
@@ -156,7 +195,7 @@ export default function TaskCreate() {
       local,
     }
 
-    criarTarefaMutation.mutate(dadosTarefa)
+    checkCompletionMutation.mutate(dadosTarefa)
   }
 
   function limparInputs() {
@@ -374,16 +413,18 @@ export default function TaskCreate() {
           className={botaoDesabilitado({
             intent:
               !formularioValido
+              || checkCompletionMutation.isPending
               || criarTarefaMutation.isPending
                 ? 'disabled'
                 : null,
           })}
           disabled={
             !formularioValido
+            || checkCompletionMutation.isPending
             || criarTarefaMutation.isPending
           }
         >
-          {criarTarefaMutation.isPending ? (
+          {checkCompletionMutation.isPending || criarTarefaMutation.isPending ? (
             <View className="flex-row items-center gap-x-2">
               <Text className="font-inter-bold text-base">Carregando...</Text>
               <ActivityIndicator color="#000000" />

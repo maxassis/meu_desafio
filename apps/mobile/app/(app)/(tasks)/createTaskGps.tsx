@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { router } from 'expo-router'
 import { useRef, useState } from 'react'
 import {
+  Alert,
   ScrollView,
   Text,
   TextInput,
@@ -13,7 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '@/components/button'
 import { LinearGradient } from '@/components/uniwind-components'
-import { createTask } from '@/services/tasks-service'
+import { checkTaskCompletion, createTask } from '@/services/tasks-service'
 import { useTrackerStore } from '@/store/rastreador-store'
 import { convertSecondsToTimeStringWithSeconds } from '@/utils/timeUtils'
 import Outdoor from '../../../assets/Outdoor.svg'
@@ -31,9 +32,9 @@ interface DadosTarefaGps {
   local: string | null
 }
 
-interface CreateTaskApiResponse {
-  message: string
-  task: DadosTarefaGps
+interface TasksCreateResponse {
+  message?: string
+  task?: unknown
   challengeCompleted?: boolean
 }
 
@@ -79,16 +80,16 @@ export default function CreateTaskGps() {
   }
 
   const { mutate, isPending } = useMutation<
-    CreateTaskApiResponse,
+    TasksCreateResponse,
     Error,
     DadosTarefaGps
   >({
     mutationFn: async (
       dadosTarefa: DadosTarefaGps,
-    ): Promise<CreateTaskApiResponse> => {
-      return await createTask(dadosTarefa) as unknown as CreateTaskApiResponse
+    ): Promise<TasksCreateResponse> => {
+      return createTask(dadosTarefa)
     },
-    onSuccess: (data: CreateTaskApiResponse) => {
+    onSuccess: (data: TasksCreateResponse) => {
       const metaAtingida = data.challengeCompleted
 
       // limparInputs();
@@ -109,13 +110,53 @@ export default function CreateTaskGps() {
     },
   })
 
+  const checkCompletionMutation = useMutation<
+    { willCompleteChallenge: boolean },
+    Error,
+    DadosTarefaGps
+  >({
+    mutationFn: async (dadosTarefa) => {
+      return checkTaskCompletion({
+        inscriptionId: dadosTarefa.inscriptionId,
+        distance: dadosTarefa.distance,
+      })
+    },
+    onSuccess: (data, dadosTarefa) => {
+      if (data.willCompleteChallenge) {
+        Alert.alert(
+          'Atenção',
+          'Ao criar esta tarefa, você concluirá o desafio. Uma vez concluído, não será mais possível adicionar novas tarefas.',
+          [
+            {
+              text: 'Cancelar',
+              style: 'cancel',
+            },
+            {
+              text: 'Concluir',
+              onPress: () => mutate(dadosTarefa),
+            },
+          ],
+          { cancelable: true },
+        )
+      }
+      else {
+        mutate(dadosTarefa)
+      }
+    },
+    onError: () => {
+      Alert.alert('Erro', 'Não foi possível verificar a conclusão do desafio.')
+    },
+  })
+
   function confirmarDescarte() {
     bottomSheetRef.current?.present()
   }
 
   function criarTarefa() {
-    if (isPending)
+    if (isPending || checkCompletionMutation.isPending) {
       return
+    }
+
     const distanceFormated = (d: number): number => {
       const num = d.toFixed(3)
       return +num
@@ -133,7 +174,7 @@ export default function CreateTaskGps() {
       local: cityStore ?? '',
     }
 
-    mutate(dadosTarefa)
+    checkCompletionMutation.mutate(dadosTarefa)
   }
 
   return (
@@ -221,8 +262,8 @@ export default function CreateTaskGps() {
           <Button
             title="Cadastrar atividade"
             onPress={() => criarTarefa()}
-            isLoading={isPending}
-            disabled={nomeAtividade.length === 0 || isPending}
+            isLoading={isPending || checkCompletionMutation.isPending}
+            disabled={nomeAtividade.length === 0 || isPending || checkCompletionMutation.isPending}
           />
         </View>
       </ScrollView>
@@ -259,11 +300,12 @@ export default function CreateTaskGps() {
               </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            if (isBottomSheetOpen.current) {
-              bottomSheetRef.current?.dismiss()
-            }
-          }}
+          <TouchableOpacity
+            onPress={() => {
+              if (isBottomSheetOpen.current) {
+                bottomSheetRef.current?.dismiss()
+              }
+            }}
           >
             <View className="h-[51px] justify-center items-center">
               <Text className="text-base mx-auto font-inter-bold">

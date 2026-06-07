@@ -19,6 +19,7 @@ interface CreateTaskPayload {
 interface CheckTaskCompletionPayload {
   inscriptionId: number
   distance: number
+  taskId?: number
 }
 
 interface UpdateTaskPayload {
@@ -83,7 +84,7 @@ export async function updateTask(id: number, payload: UpdateTaskPayload) {
 }
 
 export async function importStravaActivities(inscriptionId: number, activities: StravaActivity[]) {
-  const payload = {
+  const { data, error } = await edenClient.tasks['import-strava'].post({
     inscriptionId,
     activities: activities.map(a => ({
       stravaActivityId: a.stravaActivityId,
@@ -94,9 +95,7 @@ export async function importStravaActivities(inscriptionId: number, activities: 
       calories: a.calories,
       date: new Date(a.date),
     })),
-  }
-
-  const { data, error } = await edenClient.tasks['import-strava'].post(payload)
+  })
 
   if (error) {
     throw new Error(getEdenErrorMessage(error, 'Failed to import Strava activities'))
