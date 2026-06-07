@@ -34,3 +34,5 @@ export const app = new Elysia()
       headers: { 'Content-Type': 'text/html' },
     })
   })
+
+export type App = typeof app

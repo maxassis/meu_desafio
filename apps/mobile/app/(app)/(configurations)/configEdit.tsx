@@ -1,3 +1,4 @@
+import type { UsersEditUserdataRequest } from '@/services/api-types'
 import { TrueSheet } from '@lodev09/react-native-true-sheet'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { cva } from 'class-variance-authority'
@@ -19,8 +20,7 @@ import { SystemBars } from 'react-native-edge-to-edge'
 import { MaskedTextInput } from 'react-native-mask-text'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Image } from '@/components/uniwind-components'
-import { apiClient, getErrorMessage } from '@/services/api-client'
-import { editUserData, fetchUserData } from '@/services/users-service'
+import { deleteAvatar, editUserData, fetchUserData, uploadAvatar } from '@/services/users-service'
 import Left from '../../../assets/arrow-left.svg'
 import Cam from '../../../assets/camera.svg'
 import User from '../../../assets/user.svg'
@@ -98,23 +98,15 @@ export default function ProfileEdit() {
     mutationFn: async (formData: FormData): Promise<uploadAvatarResponse> => {
       setLoadingUpload(true)
       try {
-        const { data } = await apiClient.post<uploadAvatarResponse>(
-          '/users/upload-avatar',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          },
-        )
-        return data
+        return await uploadAvatar(formData) as uploadAvatarResponse
       }
       catch (error) {
         Alert.alert('Erro ao fazer upload do avatar')
-        throw new Error(getErrorMessage(error, 'Erro ao fazer upload do avatar'))
+        throw error
       }
       finally {
-        if (isBottomSheetAvatarRefOpen) bottomSheetAvatarRef.current?.dismiss()
+        if (isBottomSheetAvatarRefOpen)
+          bottomSheetAvatarRef.current?.dismiss()
         setLoadingUpload(false)
       }
     },
@@ -131,14 +123,11 @@ export default function ProfileEdit() {
     mutationFn: async () => {
       setLoadingUpload(true)
       try {
-        const { data } = await apiClient.delete<{ message?: string }>(
-          '/users/delete-avatar',
-        )
-        return data
+        return await deleteAvatar()
       }
       catch (error) {
         Alert.alert('Erro ao deletar avatar')
-        throw new Error(getErrorMessage(error, 'Erro ao deletar avatar'))
+        throw error
       }
       finally {
         bottomSheetAvatarRef.current?.dismiss()
@@ -198,22 +187,23 @@ export default function ProfileEdit() {
 
   const profileUpdateMutation = useMutation({
     mutationFn: async () => {
-      const payload = {
+      const payload: UsersEditUserdataRequest = {
         full_name: nameValue || null,
         bio: bioValue || null,
-        gender: genderValue || null,
-        sport: sportsValue || null,
+        gender: genderValue as UsersEditUserdataRequest['gender'] || null,
+        sport: sportsValue as UsersEditUserdataRequest['sport'] || null,
         birthDate: unMaskedValue || null,
       }
 
       return editUserData(payload)
     },
     onSuccess: () => {
-      console.warn('[edit-user-data] alteracoes salvas com sucesso')
-      if (isBottomSheetAvatarRefOpen) bottomSheetAvatarRef.current?.dismiss()
-      if (isBottomSheetRefOpen) bottomSheetRef.current?.dismiss()
-      if (!isBottomSheetSuccessRefOpen) bottomSheetSuccessRef.current?.present()
-      lottieRef.current?.play()
+      if (isBottomSheetAvatarRefOpen)
+        bottomSheetAvatarRef.current?.dismiss()
+      if (isBottomSheetRefOpen)
+        bottomSheetRef.current?.dismiss()
+      if (!isBottomSheetSuccessRefOpen)
+        bottomSheetSuccessRef.current?.present()
       queryClient.invalidateQueries({ queryKey: ['userData'] })
     },
     onError: (error) => {
@@ -270,9 +260,12 @@ export default function ProfileEdit() {
 
             <TouchableOpacity
               onPress={() => {
-                if (isBottomSheetRefOpen) bottomSheetRef.current?.dismiss()
-                if (isBottomSheetSuccessRefOpen) bottomSheetSuccessRef.current?.dismiss()
-                if (!isBottomSheetAvatarRefOpen) bottomSheetAvatarRef.current?.present()
+                if (isBottomSheetRefOpen)
+                  bottomSheetRef.current?.dismiss()
+                if (isBottomSheetSuccessRefOpen)
+                  bottomSheetSuccessRef.current?.dismiss()
+                if (!isBottomSheetAvatarRefOpen)
+                  bottomSheetAvatarRef.current?.present()
               }}
               className="h-[94px] w-[94px] mt-8 relative"
               disabled={loadingUpload}
@@ -331,10 +324,13 @@ export default function ProfileEdit() {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                if (isBottomSheetAvatarRefOpen) bottomSheetAvatarRef.current?.dismiss()
-                if (isBottomSheetSuccessRefOpen) bottomSheetSuccessRef.current?.dismiss()
+                if (isBottomSheetAvatarRefOpen)
+                  bottomSheetAvatarRef.current?.dismiss()
+                if (isBottomSheetSuccessRefOpen)
+                  bottomSheetSuccessRef.current?.dismiss()
                 setBottomSheetContent('gender')
-                if (!isBottomSheetRefOpen) bottomSheetRef.current?.present()
+                if (!isBottomSheetRefOpen)
+                  bottomSheetRef.current?.present()
               }}
             >
               <View className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4 justify-center">
@@ -352,10 +348,13 @@ export default function ProfileEdit() {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                if (isBottomSheetAvatarRefOpen) bottomSheetAvatarRef.current?.dismiss()
-                if (isBottomSheetSuccessRefOpen) bottomSheetSuccessRef.current?.dismiss()
+                if (isBottomSheetAvatarRefOpen)
+                  bottomSheetAvatarRef.current?.dismiss()
+                if (isBottomSheetSuccessRefOpen)
+                  bottomSheetSuccessRef.current?.dismiss()
                 setBottomSheetContent('sports')
-                if (!isBottomSheetRefOpen) bottomSheetRef.current?.present()
+                if (!isBottomSheetRefOpen)
+                  bottomSheetRef.current?.present()
               }}
             >
               <View className="bg-bondis-text-gray rounded-[4px] h-[52px] mt-2 pl-4 justify-center">
@@ -391,7 +390,7 @@ export default function ProfileEdit() {
         onDidPresent={() => setIsBottomSheetAvatarRefOpen(true)}
         onDidDismiss={() => setIsBottomSheetAvatarRefOpen(false)}
       >
-        <View className="flex-1 z-50 pt-6">
+        <View className="flex-1 z-50 pt-8">
           <View className="mx-5">
             {!loadingUpload ? (
               <>
@@ -440,7 +439,7 @@ export default function ProfileEdit() {
         onDidPresent={() => setIsBottomSheetRefOpen(true)}
         onDidDismiss={() => setIsBottomSheetRefOpen(false)}
       >
-        <View className="flex-1 z-50 pt-6">
+        <View className="flex-1 z-50 pt-8">
           {bottomSheetContent === 'gender' && (
             <View className="mx-5">
               {genderItems.map((item, index) => (
@@ -448,7 +447,8 @@ export default function ProfileEdit() {
                   key={item.value}
                   onPress={() => {
                     setGenderValue(item.value)
-                    if (isBottomSheetRefOpen) bottomSheetRef.current?.dismiss()
+                    if (isBottomSheetRefOpen)
+                      bottomSheetRef.current?.dismiss()
                   }}
                   className={`h-[51px] justify-center items-center ${
                     index === genderItems.length - 1
@@ -468,7 +468,8 @@ export default function ProfileEdit() {
                   key={item.value}
                   onPress={() => {
                     setSportsValue(item.value)
-                    if (isBottomSheetRefOpen) bottomSheetRef.current?.dismiss()
+                    if (isBottomSheetRefOpen)
+                      bottomSheetRef.current?.dismiss()
                   }}
                   className={`h-[51px] justify-center items-center ${
                     index === sportsItems.length - 1
@@ -489,11 +490,15 @@ export default function ProfileEdit() {
         detents={[0.35]}
         cornerRadius={20}
         backgroundColor="white"
-        onDidPresent={() => setIsBottomSheetSuccessRefOpen(true)}
+        onDidPresent={() => {
+          setIsBottomSheetSuccessRefOpen(true)
+          lottieRef.current?.reset()
+          lottieRef.current?.play()
+        }}
         onDidDismiss={() => setIsBottomSheetSuccessRefOpen(false)}
       >
-        <View className="flex-1 z-50 pt-6">
-          <View className="justify-center items-center px-5">
+        <View className="z-50 px-5 pb-6 pt-8">
+          <View className="items-center">
             <LottieView
               ref={lottieRef}
               source={require('../../../assets/lottie/check-lottie.json')}
@@ -509,9 +514,10 @@ export default function ProfileEdit() {
             </Text>
 
             <TouchableOpacity
-              className="w-full items-center justify-center h-[52px] rounded-[31px] text-black border mt-[26px] border-[#D9D9D9]"
+              className="w-full items-center justify-center h-[52px] rounded-[31px] text-black border mt-5 border-[#D9D9D9]"
               onPress={() => {
-                if (isBottomSheetSuccessRefOpen) bottomSheetSuccessRef.current?.dismiss()
+                if (isBottomSheetSuccessRefOpen)
+                  bottomSheetSuccessRef.current?.dismiss()
               }}
             >
               <Text>OK</Text>
