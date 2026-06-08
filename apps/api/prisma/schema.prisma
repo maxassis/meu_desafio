@@ -146,6 +146,7 @@ model Inscription {
   createdAt   DateTime  @default(now())
 
   @@unique([userId, desafioId])
+  @@index([desafioId])
   @@map("inscription")
 }
 
@@ -168,5 +169,7 @@ model Task {
   gpsTask       Boolean?    @default(false)
 
   @@unique([inscriptionId, stravaActivityId])
+  @@index([inscriptionId, date])
+  @@index([inscriptionId, createdAt])
   @@map("tasks")
 }

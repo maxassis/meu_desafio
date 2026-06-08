@@ -7,6 +7,7 @@ import { createElement } from 'react'
 
 import { ENV } from 'varlock/env'
 import { prisma } from '../shared/db/prisma'
+import { authSecondaryStorage } from './auth-secondary-storage'
 import { sendEmail } from './email'
 import {
   EmailVerificationOtpEmail,
@@ -55,6 +56,10 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
+  secondaryStorage: authSecondaryStorage,
+  session: {
+    storeSessionInDatabase: true,
+  },
   account: {
     encryptOAuthTokens: true,
     storeStateStrategy: 'database',

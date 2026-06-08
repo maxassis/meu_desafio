@@ -50,81 +50,86 @@ export async function getRanking(desafioId: string): Promise<RankingItem[]> {
   const startDate = new Date(now)
   startDate.setDate(startDate.getDate() - RANKING_WINDOW_DAYS)
 
-  const inscriptions = await prisma.inscription.findMany({
+  const tasks = await prisma.task.findMany({
     where: {
-      desafioId,
+      inscription: {
+        desafioId,
+      },
+      OR: [
+        {
+          date: {
+            gte: startDate,
+            lte: now,
+          },
+        },
+        {
+          date: null,
+          createdAt: {
+            gte: startDate,
+            lte: now,
+          },
+        },
+      ],
     },
-    include: {
-      user: {
+    select: {
+      distanceKm: true,
+      duration: true,
+      inscription: {
         select: {
           id: true,
-          name: true,
-          userData: {
+          user: {
             select: {
-              avatarFilename: true,
+              id: true,
+              name: true,
+              userData: {
+                select: {
+                  avatarFilename: true,
+                },
+              },
             },
           },
         },
       },
-      tasks: {
-        where: {
-          OR: [
-            {
-              date: {
-                gte: startDate,
-                lte: now,
-              },
-            },
-            {
-              date: null,
-              createdAt: {
-                gte: startDate,
-                lte: now,
-              },
-            },
-          ],
-        },
-        select: {
-          createdAt: true,
-          date: true,
-          distanceKm: true,
-          duration: true,
-        },
-        orderBy: [
-          { date: 'asc' },
-          { createdAt: 'asc' },
-        ],
-      },
     },
   })
 
-  const rankings = inscriptions.map((inscription) => {
-    const totalDistance = inscription.tasks.reduce(
-      (sum, task) => sum + Number(task.distanceKm),
-      0,
-    )
+  const rankingsByInscription = new Map<number, Omit<RankingItem, 'position'>>()
 
-    const totalDurationSeconds = inscription.tasks.reduce(
-      (sum, task) => sum + Number(task.duration),
-      0,
-    )
+  for (const task of tasks) {
+    const { inscription } = task
+    const current = rankingsByInscription.get(inscription.id) ?? {
+      userId: inscription.user.id,
+      userName: inscription.user.name,
+      userAvatar: getAvatarUrl(inscription.user.userData?.avatarFilename ?? null),
+      totalDistance: 0,
+      totalDurationSeconds: 0,
+      totalTasks: 0,
+      avgSpeed: 0,
+    }
+
+    current.totalDistance += Number(task.distanceKm)
+    current.totalDurationSeconds += Number(task.duration)
+    current.totalTasks += 1
+
+    rankingsByInscription.set(inscription.id, current)
+  }
+
+  const rankings = Array.from(rankingsByInscription.values()).map((user) => {
+    const totalDistance = user.totalDistance
+    const totalDurationSeconds = user.totalDurationSeconds
     const avgSpeed = totalDurationSeconds > 0
       ? totalDistance / (totalDurationSeconds / 3600)
       : 0
 
     return {
-      userId: inscription.user.id,
-      userName: inscription.user.name,
-      userAvatar: getAvatarUrl(inscription.user.userData?.avatarFilename ?? null),
+      ...user,
       totalDistance: Number(totalDistance.toFixed(2)),
       totalDurationSeconds: Number(totalDurationSeconds.toFixed(2)),
-      totalTasks: inscription.tasks.length,
       avgSpeed: Number(avgSpeed.toFixed(2)),
     }
   })
 
   const finalRankings = rankings
-    .filter(user => user.totalTasks > 0)
     .sort((a, b) => {
       if (b.totalDistance !== a.totalDistance) {
         return b.totalDistance - a.totalDistance
