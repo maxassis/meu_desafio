@@ -1,16 +1,8 @@
 import type { Prisma } from '../../../generated/prisma/client'
 import type { prisma } from '../../../shared/db/prisma'
+import type { EditUserDataInput } from '../users.types'
 
 type UsersDatabase = typeof prisma | Prisma.TransactionClient
-
-interface EditUserDataInput {
-  avatarFilename?: string | null
-  bio?: string | null
-  gender?: 'homem' | 'mulher' | 'nao_binario' | 'prefiro_nao_responder' | null
-  sport?: 'corrida' | 'bicicleta' | null
-  birthDate?: string | null
-  name?: string
-}
 
 export class UsersRepository {
   constructor(private readonly db: UsersDatabase) {}

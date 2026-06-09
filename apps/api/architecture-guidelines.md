@@ -3,8 +3,6 @@
 Este projeto usa Bun + Elysia com uma arquitetura modular por dominio.
 O padrao atual combina `routes`, `factory`, `service`, `repository`, `domain` e `schema`.
 
-O modulo `task` deve ser usado como referencia para novos modulos e migracoes futuras.
-
 ## Objetivo
 
 Manter uma base facil de entender, testar e evoluir, evitando abstracoes prematuras.

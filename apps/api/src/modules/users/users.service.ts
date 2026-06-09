@@ -1,6 +1,7 @@
 import type { cacheService } from '../../lib/cache/cache'
 import type { r2Service } from '../../lib/storage/r2'
 import type { UsersRepository } from './repositories/users.repository'
+import type { EditUserDataInput } from './users.types'
 import { Buffer } from 'node:buffer'
 import { ENV } from 'varlock/env'
 import { BadRequestError, NotFoundError, ServiceUnavailableError } from '../../shared/errors'
@@ -83,15 +84,6 @@ interface RankingItem {
   totalDurationSeconds: number
   totalTasks: number
   avgSpeed: number
-}
-
-interface EditUserDataInput {
-  avatarFilename?: string | null
-  bio?: string | null
-  gender?: 'homem' | 'mulher' | 'nao_binario' | 'prefiro_nao_responder' | null
-  sport?: 'corrida' | 'bicicleta' | null
-  birthDate?: string | null
-  name?: string
 }
 
 export class UsersService {
