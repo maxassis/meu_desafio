@@ -1,14 +1,14 @@
 import { Elysia } from 'elysia'
 
-import { authPlugin } from '../modules/auth/auth.plugin'
-import { desafioRoutes } from '../modules/desafio/desafio.routes'
-import { stravaRoutes } from '../modules/integrations/strava.routes'
-import { taskRoutes } from '../modules/task/task.routes'
-import { usersRoutes } from '../modules/users/users.routes'
+import { makeAuthModule } from '../modules/auth/auth.factory'
+import { makeDesafioModule } from '../modules/desafio/desafio.factory'
+import { makeStravaModule } from '../modules/integrations/strava.factory'
+import { makeTaskModule } from '../modules/task/task.factory'
+import { makeUsersModule } from '../modules/users/users.factory'
 
 export const routes = new Elysia()
-  .use(authPlugin)
-  .use(desafioRoutes)
-  .use(stravaRoutes)
-  .use(usersRoutes)
-  .use(taskRoutes)
+  .use(makeAuthModule())
+  .use(makeDesafioModule())
+  .use(makeStravaModule())
+  .use(makeUsersModule())
+  .use(makeTaskModule())

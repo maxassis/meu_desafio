@@ -2,4 +2,6 @@ import { Elysia } from 'elysia'
 
 import { auth } from '../../lib/auth'
 
-export const authPlugin = new Elysia({ name: 'auth' }).mount(auth.handler)
+export function makeAuthPlugin() {
+  return new Elysia({ name: 'auth' }).mount(auth.handler)
+}

@@ -1,34 +1,19 @@
 # AGENTS
 
-## Visao geral
-- Objetivo: apoiar manutencao e evolucao do app mantendo consistencia de API, tipagens e UI.
-- Padrao preferido: services por dominio + api client unico.
+## Escopo
 
-## Estrutura de requisicoes
-- Client: `services/api-client.ts` com baseURL do Expo e interceptor de sessao/cookie.
-- Servicos:
-  - `services/desafios-service.ts`
-  - `services/users-service.ts`
-  - (expandir para auth/tasks/payments/config quando necessario)
-- Tipagens por endpoint em `@types/*.d.ts`.
+Regras operacionais para mudanças em `apps/mobile`.
 
 ## Regras
-- Evitar URLs hardcoded; sempre usar o client ou services.
-- Padronizar erros com helper (`getErrorMessage`).
-- Usar tipos de `@types` em queries/mutations.
-- Evitar logs sensiveis em producao.
 
-## Autenticacao (Better Auth)
-- Sempre usar o client oficial do Better Auth (`authClient`) para todo fluxo de autenticacao.
-- Nao implementar login/logout/sessao com endpoints custom quando existir metodo oficial no client.
-- Padrao obrigatorio:
-  - Login email/senha: `authClient.signIn.email(...)`
-  - Login social: `authClient.signIn.social(...)`
-  - Sessao atual: `authClient.getSession()`
-  - Logout: `authClient.signOut()`
-- Evitar validacao manual de cookie/token como fonte primaria; usar `getSession()` como verdade de autenticacao.
+- Use `services/api-client.ts` e services por domínio; evite URLs hardcoded.
+- Use tipos de `@types/*.d.ts` em queries e mutations.
+- Padronize mensagens de erro com `getErrorMessage` quando aplicável.
+- Evite logs sensíveis em produção.
+- Não recrie `utils/api-service.ts`.
 
-## Convencoes de arquivos
-- Requisicoes: `services/<dominio>-service.ts`.
-- Tipos: `@types/<endpoint>.d.ts`.
-- Não usar `utils/api-service.ts` (removido); importar direto dos services.
+## Autenticação
+
+- Use o client oficial do Better Auth (`authClient`) para login, sessão e logout.
+- Use `authClient.getSession()` como fonte primária de autenticação.
+- Não implemente endpoints custom de auth quando houver método oficial no client.
