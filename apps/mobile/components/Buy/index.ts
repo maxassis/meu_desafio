@@ -1,1 +1,1 @@
-export * from './button_stripe'
+export * from './accept_desafio_button'

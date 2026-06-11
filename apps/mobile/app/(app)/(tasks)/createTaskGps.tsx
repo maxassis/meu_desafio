@@ -94,7 +94,6 @@ export default function CreateTaskGps() {
 
       // limparInputs();
       queryClient.invalidateQueries({ queryKey: ['getAllDesafios'] })
-      queryClient.invalidateQueries({ queryKey: ['desafios'] })
       queryClient.invalidateQueries({ queryKey: ['routeData', desafioSelecionado?.id] })
       queryClient.invalidateQueries({ queryKey: ['rankData', desafioSelecionado?.id] })
 

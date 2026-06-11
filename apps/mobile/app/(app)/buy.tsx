@@ -241,7 +241,7 @@ export default function Buy() {
             </View>
 
             {/* Botao comprar desafio */}
-            <AcceptDesafioButton desafioId={desafioId as string} price={purchaseData?.price as string} />
+            <AcceptDesafioButton desafioId={desafioId as string} />
           </View>
         )}
       </ScrollView>

@@ -47,7 +47,6 @@ export default function TaskList() {
     mutationFn: (id: number) => deleteTask(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', desafioSelecionado?.inscriptionId] })
-      queryClient.invalidateQueries({ queryKey: ['desafios'] })
       queryClient.invalidateQueries({ queryKey: ['routeData', desafioSelecionado?.id] })
       queryClient.invalidateQueries({ queryKey: ['getAllDesafios'] })
       queryClient.invalidateQueries({ queryKey: ['rankData', desafioSelecionado?.id] })
@@ -61,26 +60,30 @@ export default function TaskList() {
   })
 
   const closeAllSheets = () => {
-    if (isBottomSheetOpen) bottomSheetRef.current?.dismiss()
-    if (isEditSheetOpen) bottomSheetEditRef.current?.dismiss()
+    if (isBottomSheetOpen) {
+      bottomSheetRef.current?.dismiss()
+    }
+    if (isEditSheetOpen) {
+      bottomSheetEditRef.current?.dismiss()
+    }
   }
 
   useEffect(() => {
     const backAction = () => {
-        if (isEditSheetOpen) {
-          if (sheetContent === 'confirmDelete') {
-            setSheetContent('edit')
-          }
-          else {
-            bottomSheetEditRef.current?.dismiss()
-          }
-          return true
+      if (isEditSheetOpen) {
+        if (sheetContent === 'confirmDelete') {
+          setSheetContent('edit')
         }
+        else {
+          bottomSheetEditRef.current?.dismiss()
+        }
+        return true
+      }
 
-        if (isBottomSheetOpen) {
-          bottomSheetRef.current?.dismiss()
-          return true
-        }
+      if (isBottomSheetOpen) {
+        bottomSheetRef.current?.dismiss()
+        return true
+      }
 
       return false
     }
@@ -204,9 +207,12 @@ export default function TaskList() {
           <View className="mx-5">
             <TouchableOpacity
               onPress={() => {
-                if (task)
+                if (task) {
                   setTaskData(task)
-                if (isBottomSheetOpen) bottomSheetRef.current?.dismiss()
+                }
+                if (isBottomSheetOpen) {
+                  bottomSheetRef.current?.dismiss()
+                }
                 router.push('/rastreador')
               }}
               className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
@@ -216,9 +222,12 @@ export default function TaskList() {
 
             <TouchableOpacity
               onPress={() => {
-                if (task)
+                if (task) {
                   setTaskData(task)
-                if (isBottomSheetOpen) bottomSheetRef.current?.dismiss()
+                }
+                if (isBottomSheetOpen) {
+                  bottomSheetRef.current?.dismiss()
+                }
                 router.push('/createTask')
               }}
               className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400"
@@ -248,7 +257,9 @@ export default function TaskList() {
                 onPress={() => {
                   if (task) {
                     setTaskData(task)
-                    if (isEditSheetOpen) bottomSheetEditRef.current?.dismiss()
+                    if (isEditSheetOpen) {
+                      bottomSheetEditRef.current?.dismiss()
+                    }
                     router.push(task.gpsTask ? '/taskEditGps' : '/taskEdit')
                   }
                 }}

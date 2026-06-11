@@ -65,7 +65,6 @@ export default function CreateTaskGps() {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['desafios'] })
       queryClient.invalidateQueries({ queryKey: ['getAllDesafios'] })
       queryClient.invalidateQueries({ queryKey: ['routeData', desafioSelecionado?.id] })
       queryClient.invalidateQueries({ queryKey: ['rankData', desafioSelecionado?.id] })

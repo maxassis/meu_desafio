@@ -92,7 +92,6 @@ export default {
             'Este app precisa da sua localização para rastrear suas atividades enquanto você o utiliza.',
         },
       ],
-      ['@stripe/stripe-react-native', {}],
       'expo-font',
       'expo-router',
       'expo-secure-store',
@@ -104,7 +103,6 @@ export default {
       },
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       apiUrl,
-      stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
     },
   },
 }

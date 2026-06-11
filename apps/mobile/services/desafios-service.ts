@@ -37,3 +37,13 @@ export async function fetchPurchaseData(desafioId: string | number): Promise<Buy
 
   return data as BuyData
 }
+
+export async function registerUserInDesafio(desafioId: string | number) {
+  const { data, error } = await edenClient.desafio['register-user-desafio']({ id: String(desafioId) }).post()
+
+  if (error) {
+    throw new Error(getEdenErrorMessage(error, 'Erro ao aceitar o desafio'))
+  }
+
+  return data
+}

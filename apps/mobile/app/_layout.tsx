@@ -5,10 +5,8 @@ import {
   Inter_700Bold,
   useFonts,
 } from '@expo-google-fonts/inter'
-import { StripeProvider } from '@stripe/stripe-react-native'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import Constants from 'expo-constants'
 import { Slot, useRouter, useSegments } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import React, { useEffect, useState } from 'react'
@@ -71,32 +69,28 @@ function RootLayoutNav() {
 
   return (
     <SafeAreaProvider>
-      <StripeProvider
-        publishableKey={Constants.expoConfig?.extra?.stripePublicKey}
-      >
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{
-            persister,
-            maxAge: 24 * 60 * 60 * 1000,
-            buster: 'v1',
-            dehydrateOptions: {
-              shouldDehydrateQuery: (query) => {
-                const key = (query.queryKey as unknown[])[0]
-                if (key === 'strava-status')
-                  return false
-                if (key === 'stravaActivities')
-                  return false
-                return true
-              },
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister,
+          maxAge: 24 * 60 * 60 * 1000,
+          buster: 'v1',
+          dehydrateOptions: {
+            shouldDehydrateQuery: (query) => {
+              const key = (query.queryKey as unknown[])[0]
+              if (key === 'strava-status')
+                return false
+              if (key === 'stravaActivities')
+                return false
+              return true
             },
-          }}
-        >
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <Slot />
-          </GestureHandlerRootView>
-        </PersistQueryClientProvider>
-      </StripeProvider>
+          },
+        }}
+      >
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Slot />
+        </GestureHandlerRootView>
+      </PersistQueryClientProvider>
       <Toast config={toastConfig} />
     </SafeAreaProvider>
   )
