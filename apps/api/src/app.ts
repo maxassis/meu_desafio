@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cors } from '@elysiajs/cors'
 import { Elysia } from 'elysia'
+import prometheusPlugin from 'elysia-prometheus'
 
 import { ENV } from 'varlock/env'
 import { routes } from './routes'
@@ -21,6 +22,12 @@ export const app = new Elysia()
     cors({
       credentials: true,
       origin: allowedOrigins,
+    }),
+  )
+  .use(
+    prometheusPlugin({
+      metricsPath: '/metrics',
+      staticLabels: { service: 'meu-desafio-api' },
     }),
   )
   .use(
