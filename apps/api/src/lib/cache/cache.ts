@@ -1,54 +1,44 @@
-import { LRUCache } from 'lru-cache'
+import { redis } from '../redis'
+
+const DEFAULT_CACHE_TTL_SECONDS = 60 * 5
 
 class CacheService {
-  private cache: LRUCache<string, any>
-
-  constructor() {
-    this.cache = new LRUCache({
-      max: 1000,
-      ttl: 1000 * 60 * 5, // 5 minutos padrão
-      allowStale: false,
-    })
-  }
-
   async get<T>(key: string): Promise<T | null> {
     try {
-      const value = this.cache.get(key)
-      return value !== undefined ? (value as T) : null
+      const value = await redis.get(key)
+
+      if (value === null) {
+        return null
+      }
+
+      return JSON.parse(value) as T
     }
     catch (error) {
       console.error('[Cache] get error:', error)
-      throw error
+      return null
     }
   }
 
   async set(key: string, value: unknown, ttlSeconds?: number): Promise<void> {
     try {
-      if (ttlSeconds !== undefined) {
-        this.cache.set(key, value, { ttl: ttlSeconds * 1000 })
-      }
-      else {
-        this.cache.set(key, value)
-      }
+      await redis.set(key, JSON.stringify(value), 'EX', ttlSeconds ?? DEFAULT_CACHE_TTL_SECONDS)
     }
     catch (error) {
       console.error('[Cache] set error:', error)
-      throw error
     }
   }
 
   async del(key: string): Promise<void> {
     try {
-      this.cache.delete(key)
+      await redis.del(key)
     }
     catch (error) {
       console.error('[Cache] del error:', error)
-      throw error
     }
   }
 
   async disconnect(): Promise<void> {
-    this.cache.clear()
+    redis.disconnect()
   }
 }
 
