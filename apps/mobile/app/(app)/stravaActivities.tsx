@@ -75,6 +75,10 @@ export default function StravaActivities() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', desafioSelecionado?.inscriptionId] })
+      queryClient.invalidateQueries({ queryKey: ['getAllDesafios'] })
+      queryClient.invalidateQueries({ queryKey: ['stravaActivities', desafioSelecionado?.inscriptionId] })
+      queryClient.invalidateQueries({ queryKey: ['routeData', desafioSelecionado?.id] })
+      queryClient.invalidateQueries({ queryKey: ['rankData', desafioSelecionado?.id] })
       Alert.alert(
         'Importação concluída',
         `${selectedActivities.length} atividade(s) importada(s) com sucesso.`,
