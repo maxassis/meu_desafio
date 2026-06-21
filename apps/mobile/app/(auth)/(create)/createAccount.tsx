@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import Apple from '../../../assets/apple.svg'
 import Arrow from '../../../assets/arrow-right.svg'
 import Close from '../../../assets/Close.svg'

@@ -21,9 +21,8 @@ import {
   View,
 } from 'react-native'
 import { Calendar, LocaleConfig } from 'react-native-calendars'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TimePickerModal } from '@/components'
-import { KeyboardAwareScrollView, LinearGradient } from '@/components/uniwind-components'
+import { KeyboardAwareScrollView, LinearGradient, useSafeAreaInsets } from '@/components/uniwind-components'
 import { checkTaskCompletion, updateTask as updateTaskRequest } from '@/services/tasks-service'
 import Down from '../../../assets/down.svg'
 import Left from '../../../assets/Icon-left.svg'

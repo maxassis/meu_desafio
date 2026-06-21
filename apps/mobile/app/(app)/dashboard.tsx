@@ -12,7 +12,6 @@ import {
   View,
 } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CardDesafio } from '@/components'
 import {
   AvatarSkeleton,
@@ -21,7 +20,7 @@ import {
   StatsSkeleton,
   UserInfoSkeleton,
 } from '@/components/Skeletons/skeletons'
-import { Image } from '@/components/uniwind-components'
+import { Image, useSafeAreaInsets } from '@/components/uniwind-components'
 import { fetchAllDesafios } from '@/services/desafios-service'
 import { fetchStravaStatus } from '@/services/strava-service'
 import { fetchUserData } from '@/services/users-service'

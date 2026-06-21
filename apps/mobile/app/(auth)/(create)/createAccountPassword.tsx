@@ -9,8 +9,7 @@ import {
   View,
 } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { KeyboardAwareScrollView } from '@/components/uniwind-components'
+import { KeyboardAwareScrollView, useSafeAreaInsets } from '@/components/uniwind-components'
 import { authClient } from '@/services/auth-client'
 import CheckGreen from '../../../assets/check-green.svg'
 import Close from '../../../assets/Close.svg'

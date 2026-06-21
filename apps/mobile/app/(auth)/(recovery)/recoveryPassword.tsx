@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import { getErrorMessage } from '@/services/api-client'
 import { authClient } from '@/services/auth-client'
 import CheckGreen from '../../../assets/check-green.svg'

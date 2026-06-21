@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import { StatusBar, Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView } from '@/components/uniwind-components'
 import Done from '../../../assets/green-check.svg'
 
 export default function AccountDone() {

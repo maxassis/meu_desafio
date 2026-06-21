@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import { fetchStravaActivities } from '@/services/strava-service'
 import { importStravaActivities } from '@/services/tasks-service'
 import Left from '../../assets/arrow-left.svg'

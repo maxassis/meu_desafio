@@ -15,7 +15,6 @@ import * as Progress from 'react-native-progress'
 // import TaskItem from "@/components/taskItem";
 // import TaskItemSkeleton from "@/components";
 import Carousel from 'react-native-reanimated-carousel'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TaskItem, TaskItemSkeleton } from '@/components'
 import {
   AvatarSkeleton,
@@ -23,7 +22,7 @@ import {
   StatsSkeleton,
   UserInfoSkeleton,
 } from '@/components/Skeletons/skeletons'
-import { Image } from '@/components/uniwind-components'
+import { Image, useSafeAreaInsets } from '@/components/uniwind-components'
 import { fetchAllDesafios } from '@/services/desafios-service'
 import { getProfile } from '@/services/users-service'
 import useDesafioStore from '@/store/desafio-store'

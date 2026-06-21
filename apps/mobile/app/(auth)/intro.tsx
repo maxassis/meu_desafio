@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import Logo from '../../assets/Logo3.svg'
 
 SplashScreen.preventAutoHideAsync()

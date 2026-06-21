@@ -14,8 +14,8 @@ import {
   View,
 } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TaskItem, TaskItemSkeleton } from '@/components'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import Left from '../../../assets/Icon-left.svg'
 import Plus from '../../../assets/plus.svg'
 import { deleteTask, fetchTasks } from '../../../services/tasks-service'

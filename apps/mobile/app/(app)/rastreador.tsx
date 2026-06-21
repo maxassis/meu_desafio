@@ -25,10 +25,10 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { BackgroundPermissionModal } from '@/components/Tracker/background_permission_modal'
 import { HoldProgressButton } from '@/components/Tracker/button_anime'
 import { PermissionModal } from '@/components/Tracker/permission_modal'
+import { SafeAreaView, useSafeAreaInsets } from '@/components/uniwind-components'
 import fundoCinza from '../../assets/fundo-cinza.png'
 import fundoPreto from '../../assets/fundo-preto.png'
 import fundoVerde from '../../assets/fundo-verde.png'
@@ -483,7 +483,7 @@ export default function Rastreador() {
       </ImageBackground>
     </SafeAreaView>
   ) : (
-    <SafeAreaView className="flex-1 text-white">
+    <SafeAreaView className="flex-1 bg-black">
       <View className="bg-bondis-green flex-1">
         <ImageBackground
           source={backgroundImage}
@@ -538,7 +538,7 @@ export default function Rastreador() {
 
           {isPaused
             ? (
-                <View className="mt-[143px] flex-row justify-between h-[90px] relative px-14">
+                <View className="mt-[60px] flex-row justify-between h-[90px] relative px-14">
 
                   <HoldProgressButton
                     onComplete={longPressStop}
@@ -580,7 +580,7 @@ export default function Rastreador() {
             : (
                 <TouchableOpacity
                   onPress={handlePause}
-                  className="rounded-full h-[90px] w-[90px] bg-black mx-auto mt-[143px]"
+                  className="rounded-full h-[90px] w-[90px] bg-black mx-auto mt-[60px]"
                 >
                   <Pause />
                 </TouchableOpacity>

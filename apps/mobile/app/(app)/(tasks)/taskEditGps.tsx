@@ -13,8 +13,7 @@ import {
   View,
 } from 'react-native'
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { KeyboardAwareScrollView, LinearGradient } from '@/components/uniwind-components'
+import { KeyboardAwareScrollView, LinearGradient, useSafeAreaInsets } from '@/components/uniwind-components'
 import { updateTask } from '@/services/tasks-service'
 import Left from '../../../assets/Icon-left.svg'
 import Outdoor from '../../../assets/Outdoor.svg'

@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import { useAuth } from '@/contexts/auth-context'
 import { authClient } from '@/services/auth-client'
 import Arrow from '../../../assets/arrow-right.svg'

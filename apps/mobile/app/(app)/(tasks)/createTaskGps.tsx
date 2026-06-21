@@ -11,9 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '@/components/button'
-import { LinearGradient } from '@/components/uniwind-components'
+import { LinearGradient, useSafeAreaInsets } from '@/components/uniwind-components'
 import { checkTaskCompletion, createTask } from '@/services/tasks-service'
 import { useTrackerStore } from '@/store/rastreador-store'
 import { convertSecondsToTimeStringWithSeconds } from '@/utils/timeUtils'

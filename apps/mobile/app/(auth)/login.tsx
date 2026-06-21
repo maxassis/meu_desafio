@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
+import { useSafeAreaInsets } from '@/components/uniwind-components'
 import { useAuth } from '@/contexts/auth-context'
 import Apple from '../../assets/apple.svg'
 import Close from '../../assets/Close.svg'

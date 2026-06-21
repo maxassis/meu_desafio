@@ -10,8 +10,7 @@ import {
   View,
 } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Image } from '@/components/uniwind-components'
+import { Image, useSafeAreaInsets } from '@/components/uniwind-components'
 import Left from '../../assets/arrow-left.svg'
 import { fetchAllDesafios } from '../../services/desafios-service'
 import useDesafioStore from '../../store/desafio-store'

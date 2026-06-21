@@ -11,9 +11,8 @@ import {
   View,
 } from 'react-native'
 import Carousel from 'react-native-reanimated-carousel'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { AcceptDesafioButton } from '@/components'
-import { Image, LinearGradient } from '@/components/uniwind-components'
+import { Image, LinearGradient, SafeAreaView, useSafeAreaInsets } from '@/components/uniwind-components'
 import { fetchPurchaseData } from '@/services/desafios-service'
 import Left from '../../assets/arrow-left.svg'
 import Track from '../../assets/track.svg'
