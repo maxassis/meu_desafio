@@ -296,7 +296,7 @@ export default function Map2() {
         <Marker
           key={user.userId}
           coordinate={coordinate}
-          anchor={{ x: 0.5, y: 0.95 }}
+          anchor={{ x: 0.5, y: 0.75 }}
           style={{
             zIndex: isCurrentUser ? 50 : index,
             elevation: isCurrentUser ? 50 : index,
@@ -512,7 +512,7 @@ export default function Map2() {
           <Marker
             key="final"
             coordinate={routeCoordinates[routeCoordinates.length - 1]}
-            anchor={{ x: 0.5, y: 0.95 }}
+            anchor={{ x: 0.5, y: 0.85 }}
             style={{ zIndex: 40, elevation: 40 }}
             title="Final"
             tracksViewChanges={!markersReady}
