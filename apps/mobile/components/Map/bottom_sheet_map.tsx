@@ -75,7 +75,7 @@ function RankingBottomSheet({
       dismissible={false}
       dimmed={false}
       scrollable
-      scrollableOptions={{ scrollingExpandsSheet: false }}
+      scrollableOptions={{ scrollingExpandsSheet: true }}
     >
       <ScrollView>
         <SafeAreaView edges={['bottom']}>

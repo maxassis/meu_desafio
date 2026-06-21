@@ -274,16 +274,15 @@ export default function CreateTaskGps() {
         onDidPresent={() => { isBottomSheetOpen.current = true }}
         onDidDismiss={() => { isBottomSheetOpen.current = false }}
       >
-        <View className="flex-1 z-50">
-          <Text className="font-inter-bold text-base mx-5 mb-4 text-center mt-[26px]">
+        <View className="px-5 pt-[36px]">
+          <Text className="font-inter-bold text-base text-center mb-4">
             Deseja descartar esta atividade?
           </Text>
-          <Text className="text-center">
+          <Text className="text-center mb-6">
             Todo o progresso será perdido e não poderá ser recuperado.
           </Text>
 
           <TouchableOpacity
-            className="mt-4"
             onPress={() => {
               if (isBottomSheetOpen.current) {
                 bottomSheetRef.current?.dismiss()
@@ -292,8 +291,8 @@ export default function CreateTaskGps() {
               router.replace('/dashboard')
             }}
           >
-            <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400 mx-5">
-              <Text className="text-bondis-alert-red text-base font-inter-bold ">
+            <View className="h-[51px] justify-center items-center border-b-[0.2px] border-b-gray-400">
+              <Text className="text-bondis-alert-red text-base font-inter-bold">
                 Descartar atividade
               </Text>
             </View>
@@ -306,7 +305,7 @@ export default function CreateTaskGps() {
             }}
           >
             <View className="h-[51px] justify-center items-center">
-              <Text className="text-base mx-auto font-inter-bold">
+              <Text className="text-base font-inter-bold text-center">
                 Voltar
               </Text>
             </View>
