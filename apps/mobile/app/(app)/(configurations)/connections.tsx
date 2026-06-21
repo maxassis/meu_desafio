@@ -1,9 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Linking from 'expo-linking'
-import { useFocusEffect, useRouter } from 'expo-router'
-import * as WebBrowser from 'expo-web-browser'
-import { useCallback } from 'react'
+import { useRouter } from 'expo-router'
+import { useEffect, useRef } from 'react'
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
 import Toast from 'react-native-toast-message'
@@ -19,17 +18,12 @@ export default function Connections() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const queryClient = useQueryClient()
+  const isConnecting = useRef(false)
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['strava-status'],
     queryFn: fetchStravaStatus,
   })
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch()
-    }, [refetch]),
-  )
 
   const connectMutation = useMutation({
     mutationFn: async () => {
@@ -47,21 +41,10 @@ export default function Connections() {
         throw new Error('URL de autorização do Strava não encontrada')
       }
 
-      const result = await WebBrowser.openAuthSessionAsync(data.url, callbackURL)
-
-      if (result.type !== 'success') {
-        throw new Error('Autorização do Strava cancelada')
-      }
+      isConnecting.current = true
+      await Linking.openURL(data.url)
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['strava-status'] })
-      await refetch()
-      Toast.show({
-        type: 'success',
-        text1: 'Strava conectado',
-        text2: 'Sua conta Strava foi vinculada com sucesso.',
-      })
-    },
+    onSuccess: () => {},
     onError: (error) => {
       Toast.show({
         type: 'error',
@@ -70,6 +53,29 @@ export default function Connections() {
       })
     },
   })
+
+  useEffect(() => {
+    const subscription = Linking.addEventListener('url', (event) => {
+      if (
+        isConnecting.current
+        && event.url.includes('code=')
+        && event.url.includes('connections')
+      ) {
+        isConnecting.current = false
+        queryClient.invalidateQueries({ queryKey: ['strava-status'] })
+        refetch()
+        Toast.show({
+          type: 'success',
+          text1: 'Strava conectado',
+          text2: 'Sua conta Strava foi vinculada com sucesso.',
+        })
+      }
+    })
+
+    return () => {
+      subscription.remove()
+    }
+  }, [queryClient, refetch])
 
   const disconnectMutation = useMutation({
     mutationFn: disconnectStrava,
